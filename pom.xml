@@ -11,4 +11,18 @@
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>com.mycompany.metropossystem.MetroPOSSystem</exec.mainClass>
     </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+        </dependency>
+    
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+    </dependencies>
 </project>
