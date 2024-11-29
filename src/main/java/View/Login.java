@@ -49,8 +49,8 @@ public class Login extends javax.swing.JFrame {
         setTitle("Login");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        loginPanel.setBackground(new java.awt.Color(255, 255, 255,50));
-        loginPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        loginPanel.setBackground(new java.awt.Color(255, 255, 255,200));
+        loginPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         loginPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         mainLabel.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
