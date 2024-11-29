@@ -82,7 +82,8 @@ public class AddBranch extends javax.swing.JFrame {
         setTitle("SuperAdmin-AddBranch");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        bgPanel.setBackground(new java.awt.Color(255, 255, 255,50));
+        bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
+        bgPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         mainLabel.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
