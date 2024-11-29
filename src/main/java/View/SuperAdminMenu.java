@@ -44,7 +44,8 @@ public class SuperAdminMenu extends javax.swing.JFrame {
         setTitle("Super Admin");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        bgPanel.setBackground(new java.awt.Color(255, 255, 255,50));
+        bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
+        bgPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         headingLabel.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
@@ -147,6 +148,9 @@ public class SuperAdminMenu extends javax.swing.JFrame {
     private void addManagerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addManagerBtnActionPerformed
         // TODO add your handling code here:
         //will take to other add manager screen
+        AddBranchManager add=new AddBranchManager();
+        add.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_addManagerBtnActionPerformed
 
     private void addBranchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBranchbtnActionPerformed
