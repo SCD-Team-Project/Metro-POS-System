@@ -11,18 +11,18 @@ import javax.swing.event.DocumentListener;
  *
  * @author Dell
  */
-public class AddBranch extends javax.swing.JFrame {
+public class AddBranchManager extends javax.swing.JFrame {
 
     /**
-     * Creates new form AddBranch
+     * Creates new form AddBranchManager
      */
-    public AddBranch() {
+    public AddBranchManager() {
         initComponents();
         addBtn.setEnabled(false);
         addChecks();
     }
      private void enableBtn(){
-        if(!nameField.getText().isEmpty()&&!addressField.getText().isEmpty()&&phoneField.getText().length()==11&&citydropDown.getSelectedIndex()>0){
+        if(!nameField.getText().isEmpty()&&!addressField.getText().isEmpty()&&phoneField.getText().length()==11&&!emailField.getText().isEmpty()&&!salaryField.getText().isEmpty()){
             addBtn.setEnabled(true);
         }
         else
@@ -48,11 +48,11 @@ public class AddBranch extends javax.swing.JFrame {
             }
         };
         nameField.getDocument().addDocumentListener(listener);
-        citydropDown.addActionListener(evt->enableBtn());
+        emailField.getDocument().addDocumentListener(listener);
         addressField.getDocument().addDocumentListener(listener);
         phoneField.getDocument().addDocumentListener(listener);
+        salaryField.getDocument().addDocumentListener(listener);
     }
-   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -63,70 +63,78 @@ public class AddBranch extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bgPanel = new javax.swing.JPanel();
-        mainLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
-        cityLabel = new javax.swing.JLabel();
-        addressLabel = new javax.swing.JLabel();
-        phoneLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
-        citydropDown = new javax.swing.JComboBox<>();
+        emailLabel = new javax.swing.JLabel();
+        emailField = new javax.swing.JTextField();
+        phoneLabel = new javax.swing.JLabel();
+        phoneField = new javax.swing.JTextField();
+        salaryLabel = new javax.swing.JLabel();
+        salaryField = new javax.swing.JTextField();
+        addressLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         addressField = new javax.swing.JTextArea();
-        phoneField = new javax.swing.JTextField();
         addBtn = new javax.swing.JButton();
         exitBtn = new javax.swing.JButton();
-        backgroundLabel = new javax.swing.JLabel();
+        mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SuperAdmin-AddBranch");
+        setTitle("SuperAdmin- Add Branch Manager");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
-        bgPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255,200));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        mainLabel.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
-        mainLabel.setText("Add New Branch");
-        bgPanel.add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 6, -1, -1));
+        jLabel1.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
+        jLabel1.setText("Add Branch Manager");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(172, 7, -1, -1));
 
         nameLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        nameLabel.setText("Branch Name");
-        bgPanel.add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 70, -1, -1));
+        nameLabel.setText("Name");
+        jPanel1.add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 60, -1, -1));
 
-        cityLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        cityLabel.setText("City");
-        bgPanel.add(cityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(402, 70, -1, -1));
+        nameField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 226, 33));
 
-        addressLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        addressLabel.setText("Address");
-        bgPanel.add(addressLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 178, -1, -1));
+        emailLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        emailLabel.setText("Email");
+        jPanel1.add(emailLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 140, -1, -1));
+
+        emailField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(emailField, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, 226, 33));
 
         phoneLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         phoneLabel.setText("Phone");
-        bgPanel.add(phoneLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 330, -1, 28));
+        jPanel1.add(phoneLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 57, -1, -1));
 
-        nameField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 106, 200, 40));
+        phoneField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 93, 226, 33));
 
-        citydropDown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Lahore", "Karachi", "Islamabad", "Multan", "Faisalabad" }));
-        citydropDown.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        citydropDown.addActionListener(new java.awt.event.ActionListener() {
+        salaryLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        salaryLabel.setText("Salary");
+        jPanel1.add(salaryLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 138, -1, -1));
+
+        salaryField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        salaryField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                citydropDownActionPerformed(evt);
+                salaryFieldActionPerformed(evt);
             }
         });
-        bgPanel.add(citydropDown, new org.netbeans.lib.awtextra.AbsoluteConstraints(402, 106, 200, 40));
+        jPanel1.add(salaryField, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 174, 226, 33));
+
+        addressLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        addressLabel.setText("Address");
+        jPanel1.add(addressLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 250, -1, -1));
 
         addressField.setColumns(20);
         addressField.setRows(5);
         addressField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jScrollPane1.setViewportView(addressField);
 
-        bgPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 214, 326, -1));
-
-        phoneField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 364, 194, 40));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 280, 510, 70));
 
         addBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         addBtn.setText("ADD");
@@ -136,7 +144,7 @@ public class AddBranch extends javax.swing.JFrame {
                 addBtnActionPerformed(evt);
             }
         });
-        bgPanel.add(addBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(552, 427, 70, 30));
+        jPanel1.add(addBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 390, 65, 32));
 
         exitBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         exitBtn.setText("EXIT");
@@ -146,26 +154,23 @@ public class AddBranch extends javax.swing.JFrame {
                 exitBtnActionPerformed(evt);
             }
         });
-        bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(398, 427, 70, 30));
+        jPanel1.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 390, 65, 32));
 
-        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 680, 480));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, 660, 460));
 
-        backgroundLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
-        getContentPane().add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1050, 600));
+        mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
+        getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-  
-    private void citydropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_citydropDownActionPerformed
+    private void salaryFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salaryFieldActionPerformed
         // TODO add your handling code here:
-       
-    }//GEN-LAST:event_citydropDownActionPerformed
+    }//GEN-LAST:event_salaryFieldActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         // TODO add your handling code here:
-        //add the data to database backend logic
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
@@ -191,20 +196,20 @@ public class AddBranch extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBranchManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBranchManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBranchManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBranchManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddBranch().setVisible(true);
+                new AddBranchManager().setVisible(true);
             }
         });
     }
@@ -213,16 +218,18 @@ public class AddBranch extends javax.swing.JFrame {
     private javax.swing.JButton addBtn;
     private javax.swing.JTextArea addressField;
     private javax.swing.JLabel addressLabel;
-    private javax.swing.JLabel backgroundLabel;
-    private javax.swing.JPanel bgPanel;
-    private javax.swing.JLabel cityLabel;
-    private javax.swing.JComboBox<String> citydropDown;
+    private javax.swing.JTextField emailField;
+    private javax.swing.JLabel emailLabel;
     private javax.swing.JButton exitBtn;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel mainLabel;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField phoneField;
     private javax.swing.JLabel phoneLabel;
+    private javax.swing.JTextField salaryField;
+    private javax.swing.JLabel salaryLabel;
     // End of variables declaration//GEN-END:variables
 }

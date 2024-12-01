@@ -1,6 +1,8 @@
 
-package Model;
+package Model.SAdmin;
 
+import Model.Branch;
+import Model.DatabaseConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +15,12 @@ import java.util.logging.Logger;
 
 public class SuperAdminService
 {
-    Connection conn=DatabaseConnector.connect();
+    Connection conn;
+
+    public SuperAdminService(Connection conn) 
+    {
+        this.conn=conn;
+    }
     
     public boolean login(String username, String password) 
     {
@@ -91,6 +98,8 @@ public class SuperAdminService
         return branchMap;
     }
     
+    
+   
     public boolean updateBranchStatus(int branchID,boolean isActive)
     {
         String query="UPDATE BRANCH SET isActive= ? WHERE branchID=?";
@@ -110,4 +119,87 @@ public class SuperAdminService
         return false;
     }
     
+     //for update branch if required later
+    /*public boolean updateBranch(int branchID,String branchName,String city,String address,String phoneNumber, Boolean isActive)
+    {
+        StringBuilder queryBuilder=new StringBuilder("UPDATE BRANCH SET ");
+        boolean isFirstField=true;
+        
+        if(branchName!=null &&!branchName.isEmpty())
+        {
+            queryBuilder.append("branchName=?");
+            isFirstField=false;
+        }
+        
+        if (city != null && !city.isEmpty())
+         {
+            if (!isFirstField) queryBuilder.append(", ");
+            queryBuilder.append("city = ?");
+            isFirstField = false;
+        }
+        if (address != null && !address.isEmpty())
+        {
+            if (!isFirstField) queryBuilder.append(", ");
+            queryBuilder.append("address = ?");
+            isFirstField = false;
+        }
+        if (phoneNumber != null && !phoneNumber.isEmpty()) 
+        {
+            if (!isFirstField) queryBuilder.append(", ");
+            queryBuilder.append("phoneNumber = ?");
+            isFirstField = false;
+        }
+        if (isActive != null) 
+        {
+            if (!isFirstField) queryBuilder.append(", ");
+            queryBuilder.append("isActive = ?");
+        }
+
+        // Add the WHERE clause for the branchID
+        queryBuilder.append(" WHERE branchID = ?");
+
+        // Prepare the query string
+        String query = queryBuilder.toString();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) 
+        {
+            int parameterIndex = 1;
+
+            // Set the values for each field dynamically based on the provided parameters
+            if (branchName != null && !branchName.isEmpty()) 
+            {
+                pstmt.setString(parameterIndex++, branchName);
+            }
+            if (city != null && !city.isEmpty())
+            {
+                pstmt.setString(parameterIndex++, city);
+            }
+            if (address != null && !address.isEmpty())
+            {
+                pstmt.setString(parameterIndex++, address);
+            }
+            if (phoneNumber != null && !phoneNumber.isEmpty()) 
+            {
+                pstmt.setString(parameterIndex++, phoneNumber);
+            }
+            if (isActive != null)
+            {
+                pstmt.setBoolean(parameterIndex++, isActive);
+            }
+
+            // Set the branchID at the end
+            pstmt.setInt(parameterIndex, branchID);
+
+            // Execute the update
+            int rowsUpdated = pstmt.executeUpdate();
+
+            return rowsUpdated > 0;  // Return true if any rows were updated
+        } 
+        catch (SQLException e)
+        {
+            System.out.println("Error updating branch: " + e.getMessage());
+        }
+
+        return false;  // Return false if the update failed
+    } */
 }
