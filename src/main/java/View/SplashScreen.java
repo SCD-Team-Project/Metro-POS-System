@@ -16,7 +16,7 @@ public class SplashScreen extends javax.swing.JFrame {
      * Creates new form SplashScreen
      */
     public SplashScreen() {
-        initComponents();
+        initComponents();    
     }
 
     /**
@@ -29,50 +29,36 @@ public class SplashScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         bgPanel = new javax.swing.JPanel();
-        bgLabel = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        loadingLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         loading = new javax.swing.JLabel();
+        jProgressBar1 = new javax.swing.JProgressBar();
         loadingPercent = new javax.swing.JLabel();
+        mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Loading");
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        bgPanel.setBackground(new java.awt.Color(153, 153, 255));
+        bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
+        bgPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        bgPanel.setPreferredSize(new java.awt.Dimension(660, 460));
         bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        bgLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/assets/Stores-Open-Graph-Image.jpg"))); // NOI18N
-        bgPanel.add(bgLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1100, 530));
-        bgPanel.add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 564, 1090, 20));
-
-        loadingLabel.setFont(new java.awt.Font("Calibri", 3, 14)); // NOI18N
-        loadingLabel.setText("Loading....");
-        bgPanel.add(loadingLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 500, 70, -1));
-
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("jLabel1");
-        bgPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 490, -1, -1));
-
-        loading.setFont(new java.awt.Font("Calibri", 3, 18)); // NOI18N
+        loading.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         loading.setText("Loading...");
-        bgPanel.add(loading, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, -1, 20));
+        bgPanel.add(loading, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, 230, 30));
+        bgPanel.add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 560, 40));
 
-        loadingPercent.setFont(new java.awt.Font("Calibri", 3, 18)); // NOI18N
+        loadingPercent.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         loadingPercent.setText("0%");
-        bgPanel.add(loadingPercent, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 540, -1, -1));
+        bgPanel.add(loadingPercent, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, 50, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bgPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1078, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bgPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 170, 670, 170));
 
-        pack();
+        mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
+        getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
+
+        setSize(new java.awt.Dimension(1059, 608));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -104,10 +90,11 @@ public class SplashScreen extends javax.swing.JFrame {
 
        SplashScreen s=new SplashScreen();
        s.setVisible(true);
+       
        try{
        for(int i=0;i<=100;i++){
            Thread.sleep(100);
-           s.loading.setText(i+"%");
+           s.loadingPercent.setText(i+"%");
            
            if(i==20){
                s.loading.setText("Turning on Modules");
@@ -133,12 +120,10 @@ public class SplashScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel bgLabel;
     private javax.swing.JPanel bgPanel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JLabel loading;
-    private javax.swing.JLabel loadingLabel;
     private javax.swing.JLabel loadingPercent;
+    private javax.swing.JLabel mainLabel;
     // End of variables declaration//GEN-END:variables
 }
