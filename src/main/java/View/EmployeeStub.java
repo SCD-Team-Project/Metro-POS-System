@@ -1,19 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package View;
 
 import Controller.EmployeeController;
 import Model.EmployeeType;
 
-/**
- *
- * @author LENOVO
- */
 public class EmployeeStub 
 {
-    EmployeeController empController=new EmployeeController();
+
+    EmployeeController empController;
+
+    public EmployeeStub(EmployeeController empController) 
+    {
+        this.empController=empController;
+    }
     
     public void verifyEmployeeLogin(int employeeID,String password, EmployeeType type)
     {
@@ -47,7 +46,7 @@ public class EmployeeStub
         }
     }
     
-    public void delteEmployee(int employeeID,EmployeeType type)
+    public void deleteEmployee(int employeeID,EmployeeType type)
     {
         boolean result=empController.deleteEmployee(employeeID, type);
         if(result)

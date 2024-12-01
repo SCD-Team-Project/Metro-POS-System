@@ -11,20 +11,15 @@ import java.util.Map;
 public class SuperAdminStub 
 {
     //JButton login;
-    String type;
-    String username;
-    String password;
-    SuperAdminController SAdminController= new SuperAdminController();
+    SuperAdminController SAdminController;
 
-    public SuperAdminStub(String type, String username, String password) 
+    public SuperAdminStub(SuperAdminController sAdminController) 
     {
-        this.type = type;
-        this.username = username;
-        this.password = password;
+        this.SAdminController=sAdminController;
     }
     
     //overall alllogin stub
-    public void handleLogin()
+    public void handleLogin(String type,String username,String password)
     {
         if("sAdmin".equals(type))
         {
@@ -42,7 +37,7 @@ public class SuperAdminStub
         }
         else
         {
-            
+            //in the employee controller the other login stub
         }
     }
     

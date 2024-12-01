@@ -1,17 +1,17 @@
 
 package Controller;
 
-import Model.EmployeeService;
+
+import Model.Employee.EmployeeService;
 import Model.EmployeeType;
-import Model.PasswordUtils;
 
 public class EmployeeController 
 {
     private EmployeeService employeeService;
     
-    public EmployeeController()
+    public EmployeeController(EmployeeService empService)
     {
-        this.employeeService=new EmployeeService();
+        this.employeeService=empService;
     }
     //for adding new employee
     //this function should be returning new employeeID if no new employee inserted then it will be returning zero 0

@@ -1,6 +1,8 @@
 
-package Model;
+package Model.Employee;
 
+import Model.EmployeeType;
+import Model.PasswordUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +14,12 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class EmployeeService 
 {
-    Connection conn=DatabaseConnector.connect();
+    Connection conn;
+
+    public EmployeeService(Connection conn) 
+    {
+        this.conn=conn;
+    }
     
     public int addEmployee(String email,String name,EmployeeType type,int branchID,String phone,String address, int salary)
     {
@@ -62,7 +69,7 @@ public class EmployeeService
                 String storedPassword=rs.getString("password");
                 if(BCrypt.checkpw(enteredPassword, storedPassword))
                 {
-                    if(enteredPassword.equals(PasswordUtils.INITIAL_PASSWORD))
+                    if(BCrypt.checkpw(enteredPassword, PasswordUtils.getInitialPassword()))
                     {
                         //if it is logged in and the login is 1st time then 0 will be returned
                         return 0;

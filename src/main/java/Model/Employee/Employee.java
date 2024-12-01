@@ -1,5 +1,7 @@
 
-package Model;
+package Model.Employee;
+
+import Model.EmployeeType;
 
 
 public class Employee 
@@ -128,8 +130,4 @@ public class Employee
     {
         this.salary = salary;
     }
-    
-    
-    
-    
 }
