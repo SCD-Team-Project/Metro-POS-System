@@ -139,6 +139,11 @@ public class AddCashier extends javax.swing.JFrame {
         exitBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         exitBtn.setText("EXIT");
         exitBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        exitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitBtnActionPerformed(evt);
+            }
+        });
         bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 92, 33));
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, 670, -1));
@@ -148,6 +153,13 @@ public class AddCashier extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
+        // TODO add your handling code here:
+          BranchManagerMenu menu=new BranchManagerMenu();
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_exitBtnActionPerformed
 
     /**
      * @param args the command line arguments
