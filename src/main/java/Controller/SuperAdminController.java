@@ -2,16 +2,16 @@
 package Controller;
 
 import Model.Branch;
-import Model.SuperAdminService;
+import Model.SAdmin.SuperAdminService;
 import java.util.Map;
 
 public class SuperAdminController 
 {
     SuperAdminService sAdminService;
     
-    public SuperAdminController()
+    public SuperAdminController(SuperAdminService sAdminService)
     {
-        sAdminService=new SuperAdminService();
+        this.sAdminService=sAdminService;
     }
     public boolean verifyUser(String username, String password) 
     {

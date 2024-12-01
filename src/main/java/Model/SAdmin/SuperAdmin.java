@@ -1,5 +1,5 @@
 
-package Model;
+package Model.SAdmin;
 
 
 public class SuperAdmin 
