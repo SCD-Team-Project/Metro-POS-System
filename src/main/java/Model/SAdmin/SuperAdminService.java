@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,9 +98,7 @@ public class SuperAdminService
         }
         return branchMap;
     }
-    
-    
-   
+
     public boolean updateBranchStatus(int branchID,boolean isActive)
     {
         String query="UPDATE BRANCH SET isActive= ? WHERE branchID=?";
@@ -118,7 +117,51 @@ public class SuperAdminService
         }
         return false;
     }
-    
+
+      public boolean deleteBranch(int branchID)
+    {
+        // First checking if there are employees assigned to this branch
+        String checkEmployeesQuery = "SELECT COUNT(*) FROM EMPLOYEE WHERE branchID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(checkEmployeesQuery)) 
+        {
+            pstmt.setInt(1, branchID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next())
+            {
+                int employeeCount = rs.getInt(1);
+                if (employeeCount > 0)
+                {
+                    System.out.println("Cannot delete branch. Employees are still assigned to this branch.");
+                    return false;
+                }
+            }
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error checking employees: " + e.getMessage());
+            return false;
+        }
+
+        // Now proceeding to delete the branch if no employees are found.
+        String deleteQuery = "DELETE FROM BRANCH WHERE branchID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(deleteQuery)) 
+        {
+            pstmt.setInt(1, branchID);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;  // If rows were affected, return true (branch deleted).
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error deleting branch: " + e.getMessage());
+        }
+
+        return false;
+    }    
+      
      //for update branch if required later
     /*public boolean updateBranch(int branchID,String branchName,String city,String address,String phoneNumber, Boolean isActive)
     {

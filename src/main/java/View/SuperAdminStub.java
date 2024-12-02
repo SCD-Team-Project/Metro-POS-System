@@ -1,9 +1,12 @@
 
 package View;
 
+import Controller.EmployeeController;
+import Model.EmployeeType;
 import javax.swing.JButton;
 import Controller.SuperAdminController;
 import Model.Branch;
+import Model.PasswordUtils;
 import Model.UserSession;
 import java.util.Map;
 
@@ -12,10 +15,12 @@ public class SuperAdminStub
 {
     //JButton login;
     SuperAdminController SAdminController;
+    EmployeeController employeeController;
 
-    public SuperAdminStub(SuperAdminController sAdminController) 
+    public SuperAdminStub(SuperAdminController sAdminController,EmployeeController empController) 
     {
         this.SAdminController=sAdminController;
+        this.employeeController=empController;
     }
     
     //overall alllogin stub
@@ -79,22 +84,34 @@ public class SuperAdminStub
         }
     }
     
-   /* public void addBranchManager(int branchID)
+    //same as addnewEmployee
+    public void addBranchManager(int branchID,String email,String name,String phone,String address,int salary,EmployeeType type)
     {
         //branch id from row in the table yk
         //a row from table is selected. 
         //if the manager id there is zero then the add manager button will be enabled else disabled
         //the selected row branchID is sent to the controller so that a branch manager is added against him!
-        boolean result=SAdminController.addBranchManager(branchID);
-        if(result)
-        {
-            System.out.println("Branch Manager Added successfully");
-        }
-        else
+        int result=employeeController.addNewEmployee(email, name, type, branchID, phone, address, salary);
+        if(result==0)
         {
             System.out.println("Error: Failed to add branch manager");
         }
-        
-    } */
+        else
+        {
+            System.out.println("Branch Manager Added successfully with ID: "+ result +" and password:  "+ PasswordUtils.getInitialPassword());
+        }
+    } 
     
+    public void deleteBranch(int branchID)
+    {
+        boolean result=SAdminController.deleteBranch(branchID);
+        if(result)
+        {
+            System.out.println("Branch deleted Successfullly");
+        }
+        else
+        {
+            System.out.println("Error deleteing the branch");
+        }
+    }
 }

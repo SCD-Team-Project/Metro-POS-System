@@ -33,6 +33,10 @@ public class SuperAdminController
         return sAdminService.updateBranchStatus(branchID, status);
     }
 
+    public boolean deleteBranch(int branchID)
+    {
+        return sAdminService.deleteBranch(branchID);
+    }
    // public boolean addBranchManager(int branchID,Employee manager) 
     //{
      //   return addBranchManager(branchID,manager);
