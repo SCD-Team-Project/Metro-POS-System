@@ -3,7 +3,9 @@ package Controller;
 
 import Model.Branch;
 import Model.SAdmin.SuperAdminService;
+import java.util.List;
 import java.util.Map;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class SuperAdminController 
 {
@@ -51,6 +53,16 @@ public class SuperAdminController
     //{
      //   return addBranchManager(branchID,manager);
    // }
+
+    public DefaultCategoryDataset getDataSetReports(int branchID,String start,String end) 
+    {
+        return sAdminService.getDataSetReports(branchID,start,end);
+    }
+
+    public List<Integer> getAllBranchIDs() 
+    {
+        return sAdminService.getAllBranchIDs();
+    }
     
     
     

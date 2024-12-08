@@ -3,15 +3,19 @@ package Model.SAdmin;
 
 import Model.Branch;
 import Model.DatabaseConnector;
+import View.ViewReports;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 
 public class SuperAdminService
@@ -250,4 +254,72 @@ public class SuperAdminService
 
         return false;  // Return false if the update failed
     } */
+
+    public DefaultCategoryDataset getDataSetReports(int branchID,String startDate,String endDate) 
+    {
+         String query = "SELECT " +
+                   "    branchID, " +
+                   "    SUM(sales.numOfItemsSold * sales.salePrice) AS totalSales, " +
+                   "    SUM(purchased_products.numOfItemsPurchased * purchased_products.unitPurchasePrice) AS totalPurchases, " +
+                   "    SUM(sales.numOfItemsSold * sales.salePrice) - SUM(purchased_products.numOfItemsPurchased * purchased_products.unitPurchasePrice) AS totalProfit " +
+                   "FROM " +
+                   "    sales " +
+                   "JOIN " +
+                   "    purchased_products ON sales.productID = purchased_products.productID AND sales.branchID = purchased_products.branchID " +
+                   "WHERE " +
+                   "    sales.branchID = ? " +
+                   "    AND sales.saleDate BETWEEN ? AND ? " +
+                   "GROUP BY " +
+                   "    branchID";
+
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setInt(1, branchID);
+        pstmt.setTimestamp(2, Timestamp.valueOf(startDate + " 00:00:00"));
+        pstmt.setTimestamp(3, Timestamp.valueOf(endDate + " 23:59:59"));
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                int totalSales = rs.getInt("totalSales");
+                int totalPurchases = rs.getInt("totalPurchases");
+                int totalProfit = rs.getInt("totalProfit");
+
+                // Add data to the dataset
+                dataset.addValue(totalSales, "Sales", "Branch " + branchID);
+                dataset.addValue(totalPurchases, "Purchases", "Branch " + branchID);
+                dataset.addValue(totalProfit, "Profit", "Branch " + branchID);
+
+                // Update the labels
+                //ViewReports.purchasevar.setText(String.valueOf(totalPurchases));
+                //ViewReports.salesvar.setText(String.valueOf(totalSales));
+                //ViewReports.profitvar.setText(String.valueOf(totalProfit));
+            } else {
+                System.out.println("No data found for the given criteria.");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error generating report: " + e.getMessage());
+    }
+    return dataset;
+}
+
+    public List<Integer> getAllBranchIDs() 
+    {
+        List<Integer> branchIDs = new ArrayList<>();
+    String query = "SELECT branchID FROM BRANCH";
+
+    try (PreparedStatement pstmt = conn.prepareStatement(query);
+         ResultSet rs = pstmt.executeQuery()) {
+
+        while (rs.next()) {
+            int branchID = rs.getInt("branchID");
+            branchIDs.add(branchID);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error fetching branch IDs: " + e.getMessage());
+    }
+
+    return branchIDs;
+    }
 }

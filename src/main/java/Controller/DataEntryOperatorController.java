@@ -4,6 +4,7 @@ package Controller;
 import Model.Category;
 import Model.DataEntryOperator.DataEntryOperatorService;
 import Model.Product;
+import Model.Sale;
 import java.util.List;
 
 
@@ -60,6 +61,33 @@ public class DataEntryOperatorController
     {
         return DEOService.getCategoryID(categoryName);
     }
+
+    public List<Product> getAllProducts() 
+    {
+        return DEOService.getAllProducts();
+    }
+
+    public int getSalesPrice(String productName)
+    {
+        return DEOService.getSalesPrice(productName);
+    }
+
+    public boolean saveSales(List<Sale> saleList, int branchID) 
+    {
+        return DEOService.saveSales(saleList,branchID);
+    }
+
+    public int getCurrentQuantityOfProduct(int branchID, String productName) 
+    {
+        return DEOService.getCurrentQuantityOfProduct(branchID,productName);
+    }
+
+    public boolean saveDataIfFlagSet()
+    {
+         return DEOService.saveDataIfFlagSet();
+    }
+
+   
 
    
 }

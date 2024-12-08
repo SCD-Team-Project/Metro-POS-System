@@ -8,12 +8,14 @@ package View;
  *
  * @author Dell
  */
-public class BranchManagerMenu extends javax.swing.JFrame {
+public class BranchManagerMenu extends javax.swing.JFrame 
+{
 
     /**
      * Creates new form BranchManagerMenu
      */
-    public BranchManagerMenu() {
+    public BranchManagerMenu() 
+    {
         initComponents();
     }
 

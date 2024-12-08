@@ -7,6 +7,30 @@ public class Sale
 {
     int salesID;
     int productID;
+    String productName;
+    int branchID;
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getBranchID() {
+        return branchID;
+    }
+
+    public void setBranchID(int branchID) {
+        this.branchID = branchID;
+    }
+
+    public Sale(String productName, int numOfItemsSold, int salePrice) {
+        this.productName = productName;
+        this.numOfItemsSold = numOfItemsSold;
+        this.salePrice = salePrice;
+    }
     int numOfItemsSold;
     int salePrice;
     Timestamp saleDate;

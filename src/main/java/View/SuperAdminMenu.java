@@ -48,6 +48,7 @@ public class SuperAdminMenu extends javax.swing.JFrame {
         activateBranchBtn = new javax.swing.JButton();
         deactivateBranchBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
+        viewReports = new javax.swing.JButton();
         backgroundLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -112,7 +113,7 @@ public class SuperAdminMenu extends javax.swing.JFrame {
                 deactivateBranchBtnActionPerformed(evt);
             }
         });
-        bgPanel.add(deactivateBranchBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(777, 366, 166, 50));
+        bgPanel.add(deactivateBranchBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 350, 166, 50));
 
         logoutBtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         logoutBtn.setText("Logout");
@@ -122,7 +123,17 @@ public class SuperAdminMenu extends javax.swing.JFrame {
                 logoutBtnActionPerformed(evt);
             }
         });
-        bgPanel.add(logoutBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(777, 451, 166, 50));
+        bgPanel.add(logoutBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 20, 166, 50));
+
+        viewReports.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        viewReports.setText("View Reports");
+        viewReports.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        viewReports.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewReportsActionPerformed(evt);
+            }
+        });
+        bgPanel.add(viewReports, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 430, 166, 50));
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 950, 510));
         getContentPane().add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
@@ -205,6 +216,12 @@ public class SuperAdminMenu extends javax.swing.JFrame {
         new Login().setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
 
+    private void viewReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewReportsActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        new ViewReports().setVisible(true);
+    }//GEN-LAST:event_viewReportsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -251,5 +268,6 @@ public class SuperAdminMenu extends javax.swing.JFrame {
     private javax.swing.JLabel headingLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton logoutBtn;
+    private javax.swing.JButton viewReports;
     // End of variables declaration//GEN-END:variables
 }

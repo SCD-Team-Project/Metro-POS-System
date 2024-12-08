@@ -3,18 +3,32 @@ package Model.DataEntryOperator;
 
 import Model.Category;
 import Model.Product;
+import Model.Sale;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class DataEntryOperatorService 
 {
     private Connection conn;
+    private static final String FLAG_FILE_PATH = "dataFlag.txt"; // Path to the flag file
+    private static final String TEMP_DATA_FILE = "tempData.txt"; 
     
     public DataEntryOperatorService(Connection conn)
     {
@@ -175,20 +189,22 @@ public class DataEntryOperatorService
     public List<Product> getAllProducts()
     {
         List<Product> productList=new ArrayList<>();
-        String query="SELECT productID,productName,categoryID,stockQuantity,purchasePrice,salesPrice FROM PRODUCT";
+        String query="SELECT productID,productName,categoryID,purchasePrice,salesPrice FROM PRODUCT";
         
         try(PreparedStatement pstmt=conn.prepareStatement(query);
                 ResultSet rs=pstmt.executeQuery())
         {
+            while (rs.next()) 
+    {
                 int productID = rs.getInt("productID");
                 String productName = rs.getString("productName");
                 int categoryID = rs.getInt("categoryID");
-                int stockQuantity = rs.getInt("stockQuantity");
                 int purchasePrice = rs.getInt("purchasePrice");
                 int salesPrice = rs.getInt("salesPrice");
 
-                Product product = new Product(productID, productName, categoryID, stockQuantity, purchasePrice, salesPrice);
+                Product product = new Product(productID, productName, categoryID, purchasePrice, salesPrice);
                 productList.add(product);
+    }
         } 
         catch (SQLException e)
         {
@@ -382,11 +398,12 @@ public class DataEntryOperatorService
                         updateStockStmt.setInt(3, product.getStockQuantity());
 
                         int rowsAffected = updateStockStmt.executeUpdate();
-                        if (rowsAffected <= 0) 
+                        /*if (rowsAffected <= 0) 
                         {
                             System.out.println("Failed to update stock for product: " + product.getProductName());
                             isSuccess = false;
-                        }
+                        }*/
+                        //if failed to save it means that it already exists and trigger will update it automatically
                     }
                 }
             } 
@@ -451,4 +468,218 @@ public class DataEntryOperatorService
     
     //now for sales function aka minus the product quantity from stock when a new sale is done and add it into the new sale button okayyy!???
 
+    public int getSalesPrice(String productName) 
+    {
+         String query = "SELECT salesPrice FROM PRODUCT WHERE productName = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setString(1, productName);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("salesPrice");
+            }
+        }
+        } catch (SQLException e) {
+        System.out.println("Error retrieving sales price: " + e.getMessage());
+        }
+
+        return -1; // Return -1 if product not found or error occurs
+    }
+
+    public boolean saveSales(List<Sale> saleList, int branchID)
+    {
+        ///salelist have: name of product to be sold, quantity sold, unit salesprice
+        //it will be saved in the db in the table: sales having columns:
+        //salesID, productID,numofitemssold,saleprice,saledate,branchid
+        //if not able to store in the db then storing in the file okay?
+        
+        String insertQuery= "INSERT INTO sales (productID, numofitemssold, saleprice, branchID) VALUES (?, ?, ?, ?)";
+        boolean isSuccess=true;
+        try(PreparedStatement ps = conn.prepareStatement(insertQuery))
+        {
+            for(Sale sale: saleList)
+            {
+                int productId=getProductID(sale.getProductName());
+                
+                ps.setInt(1, productId);
+                ps.setInt(2, sale.getNumOfItemsSold());
+                ps.setDouble(3, sale.getSalePrice());
+               // ps.setDate(4, Date.valueOf(LocalDate.now()));
+                ps.setInt(4, branchID);
+                ps.addBatch();
+            }
+              ps.executeBatch(); 
+              
+        }
+        catch(SQLException e)
+        {
+            System.out.println("Error: "+ e.getMessage());
+            isSuccess=false;
+            //saving tofile in case of error
+            
+        }
+        return isSuccess;
+    }
+
+    private int getProductID(String productName)
+    {
+        String query = "SELECT productid FROM PRODUCT WHERE productname = ?";
+    
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) 
+    {
+        pstmt.setString(1, productName);
+
+        try (ResultSet rs = pstmt.executeQuery()) 
+        {
+            if (rs.next()) 
+            {
+                 ResultSetMetaData metaData = rs.getMetaData();
+                System.out.println("Column name: " + metaData.getColumnName(1));
+                return rs.getInt("productid");
+            }
+        }
+    } 
+    catch (SQLException e) 
+    {
+        System.out.println("Error retrieving product ID: " + e.getMessage());
+    }
+
+    return -1; // Returning -1 if product not found
+    }
+
+    private void saveSalesToFile(List<Sale> saleList, int branchID) 
+    {
+    String fileName = "TEMP_DATA_FILE";
+    
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+        for (Sale sale : saleList) 
+        {
+            writer.write(String.format("%s,%d,%d,%s,%d%n",
+            sale.getProductName(), sale.getNumOfItemsSold(), sale.getSalePrice(), LocalDate.now(), branchID));
+        }
+        System.out.println("Sales data saved to file: " + fileName);
+    }
+    catch (IOException ex) 
+    {
+       System.out.println("Error saving data into the file too: " + ex.getMessage());
+    }
+}
+ public boolean saveDataIfFlagSet() 
+ {
+     boolean res=false;
+        if (checkFlag())
+        {
+            // Save data to the database
+            res= saveDataFromFile();
+            
+            // Reset the flag after saving data
+            resetFlag();
+        }
+        return res;
+}
+  private void resetFlag() 
+  {
+        try 
+        {
+            Files.write(Paths.get(FLAG_FILE_PATH), "0".getBytes());
+        } 
+        catch (IOException e)
+        {
+            System.out.println("Error resetting flag file: " + e.getMessage());
+        }
+    }
+  private boolean checkFlag() 
+  {
+        try 
+        {
+            String flag = new String(Files.readAllBytes(Paths.get(FLAG_FILE_PATH))).trim();
+            return "1".equals(flag);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error reading flag file: " + e.getMessage());
+            return false;
+        }
+  }
+    private boolean saveDataFromFile() 
+ {
+     boolean success=true;
+        try (BufferedReader br = new BufferedReader(new FileReader(TEMP_DATA_FILE)))
+        {
+            String line;
+            while ((line = br.readLine()) != null) 
+            {
+                // Logic to parse the line and insert it into the database
+                // Assume the data in the temp file is in the format "ProductName,Quantity,Price,BranchID"
+                String[] data = line.split(",");
+                String productName = data[0];
+                int quantity = Integer.parseInt(data[1]);
+                int salesprice = Integer.parseInt(data[2]);
+                //Date date=Date.parse(data[3]);
+                int branchid = Integer.parseInt(data[4]);
+                
+                // Call your method to insert the product into the database
+                saveSaletoDB(productName, quantity, salesprice, branchid);  // Assuming salesPrice is same as purchasePrice
+                success=true;
+            }
+        } catch (IOException e) 
+        {
+            System.out.println("Error reading temporary data file: " + e.getMessage());
+            success=false;
+        }
+        return success;
+    }
+
+    private void saveSaletoDB(String productName, int quantity, int salesprice, int branchid)
+    {
+         String insertQuery = "INSERT INTO sales (productID, numofitemssold, saleprice, branchID) VALUES (?, ?, ?, ?)";
+    
+    try (PreparedStatement ps = conn.prepareStatement(insertQuery)) {
+        int productId = getProductID(productName);
+        
+        if (productId != -1)
+        {
+            ps.setInt(1, productId);
+            ps.setInt(2, quantity);
+            ps.setDouble(3, salesprice);
+           // ps.setDate(4, Date.valueOf(LocalDate.now()));
+            ps.setInt(4, branchid);
+            ps.executeUpdate();
+            
+        }
+        else
+        {
+            System.out.println("Error: Product not found for " + productName);
+        }
+    } 
+    catch (SQLException e)
+    {
+        System.out.println("Error saving sale to DB: " + e.getMessage());
+    }
+    }
+
+    public int getCurrentQuantityOfProduct(int branchID, String productName) 
+    {
+    String query = "SELECT stockQuantity FROM BRANCH_PRODUCT_STOCK WHERE branchID = ? AND productID = ?";
+    
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) 
+    {
+        pstmt.setInt(1, branchID);
+        pstmt.setInt(2, getProductID(productName));
+
+        try (ResultSet rs = pstmt.executeQuery()) 
+        {
+            if (rs.next()) 
+            {
+                return rs.getInt("productID");
+            }
+        }
+    } 
+    catch (SQLException e) 
+    {
+        System.out.println("Error retrieving product ID: " + e.getMessage());
+    }
+
+    return -1; // Returning -1 if product not found
+    }
 }

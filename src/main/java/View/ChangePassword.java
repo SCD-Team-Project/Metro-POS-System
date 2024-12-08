@@ -23,6 +23,8 @@ public class ChangePassword extends javax.swing.JFrame {
     {
         employeeController=EmployeeController.getInstance(new EmployeeService());
         initComponents();
+        confirmPassField.setText("");
+        newPassField.setText("");
     }
 
     /**

@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.jfree.data.category.DefaultCategoryDataset;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -332,6 +333,40 @@ public class SuperAdminServiceTest {
         catch(SQLException ex){
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Test of login method, of class SuperAdminService.
+     */
+    @Test
+    public void testLogin() {
+        System.out.println("login");
+        String username = "";
+        String password = "";
+        SuperAdminService instance = new SuperAdminService();
+        boolean expResult = false;
+        boolean result = instance.login(username, password);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDataSetReports method, of class SuperAdminService.
+     */
+    @Test
+    public void testGetDataSetReports() {
+        System.out.println("getDataSetReports");
+        int branchID = 0;
+        String startDate = "";
+        String endDate = "";
+        Object = null;
+        SuperAdminService instance = new SuperAdminService();
+        DefaultCategoryDataset expResult = null;
+        DefaultCategoryDataset result = instance.getDataSetReports(branchID, startDate, endDate, <error>);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
     
 }

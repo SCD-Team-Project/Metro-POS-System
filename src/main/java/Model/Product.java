@@ -43,6 +43,16 @@ public class Product
         this.salesPrice = salesPrice;
         this.stockQuantity=quantity;
     }
+     public Product(int productID,String productName, int categoryID, int purchasePrice, int salesPrice) 
+    {
+        this.productID = productID;
+        this.productName = productName;
+        this.categoryID = categoryID;
+        this.purchasePrice = purchasePrice;
+        this.salesPrice = salesPrice;
+        this.stockQuantity=0;
+
+    }
     
     
     public int getProductID()

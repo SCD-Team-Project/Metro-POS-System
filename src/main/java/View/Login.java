@@ -5,12 +5,15 @@
 package View;
 
 
+import Controller.DataEntryOperatorController;
 import Controller.EmployeeController;
 import Controller.SuperAdminController;
+import Model.DataEntryOperator.DataEntryOperatorService;
 import Model.Employee.EmployeeService;
 import Model.EmployeeType;
 import Model.SAdmin.SuperAdminService;
 import Model.UserSession;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,6 +36,7 @@ public class Login extends javax.swing.JFrame {
 =======*/
     SuperAdminController superAdminController;
     EmployeeController employeeController;
+    DataEntryOperatorController deocontroller;
     /**
      * Creates new form Login
      * @param superAdminController
@@ -44,6 +48,7 @@ public class Login extends javax.swing.JFrame {
         
         this.superAdminController=superAdminController;
         this.employeeController=employeeController;
+        this.deocontroller=DataEntryOperatorController.getInstance(new DataEntryOperatorService());
         initComponents();
         
        // loginBtn.setEnabled(false);
@@ -218,6 +223,16 @@ public class Login extends javax.swing.JFrame {
         javax.swing.JOptionPane.showMessageDialog(this, "Login Failed. Please check your credentials.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
            
     } 
+    else
+    {
+       boolean res= deocontroller.saveDataIfFlagSet();
+        if(res)
+        {
+                    JOptionPane.showMessageDialog(null, "Data saved in the database from file successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+
+    }
     userRole.setSelectedIndex(-1);
     usernameField.setText("");
     passwordField.setText("");

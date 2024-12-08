@@ -4,32 +4,66 @@
  */
 package View;
 
+import Controller.DataEntryOperatorController;
+import Model.DataEntryOperator.DataEntryOperatorService;
+import Model.Product;
+import Model.Sale;
+import Model.UserSession;
 import java.awt.event.ActionEvent;
 import javax.swing.event.DocumentEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Dell
  */
-public class Cashier extends javax.swing.JFrame {
+public class Cashier extends javax.swing.JFrame 
+{
 
     /**
      * Creates new form Cashier
      */
-    public Cashier() {
+    List<Product> productList=new ArrayList<>();
+    List<Sale> salesList=new ArrayList<>();
+    int branchID=UserSession.getBranchID();
+    DefaultTableModel tableModel;
+    DataEntryOperatorController deoController;
+    public Cashier()
+    {
         initComponents();
         saveBtn.setEnabled(false);
-       addChecks();
+       //addChecks();
+       tableModel=(DefaultTableModel)productsTable.getModel();
+       deoController=DataEntryOperatorController.getInstance(new DataEntryOperatorService());
+        loadProducts();
     }
-    private void enableBtn(){
-        if(productField.getSelectedIndex()!=0&&!quantityField.getText().isEmpty()){
+    private void loadProducts() 
+    {
+    try
+    {
+        List<Product> products = deoController.getAllProducts();
+        productField.removeAllItems();
+        productField.addItem("Select Product");
+        for (Product product : products) 
+        {
+            productField.addItem(product.getProductName());
+        }
+    } catch (Exception e) 
+    {
+        JOptionPane.showMessageDialog(this, "Error loading products: " + e.getMessage());
+    }
+    }
+    private void enableBtn()
+    {
+       
             saveBtn.setEnabled(true);
-        }
-        else{
-            saveBtn.setEnabled(false);
-        }
+        
     }
-    private void addChecks(){
+    private void addChecks()
+    {
         productField.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -37,7 +71,7 @@ public class Cashier extends javax.swing.JFrame {
               enableBtn();
             }
         });
-        quantityField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+        /*quantityField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -55,7 +89,7 @@ public class Cashier extends javax.swing.JFrame {
               //  throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
               enableBtn();
             }
-        });
+        });*/
         
     }
     
@@ -72,15 +106,18 @@ public class Cashier extends javax.swing.JFrame {
         bgPanel = new javax.swing.JPanel();
         heading = new javax.swing.JLabel();
         productField = new javax.swing.JComboBox<>();
-        quantityField = new javax.swing.JTextField();
         productLabel = new javax.swing.JLabel();
         quantityLabel = new javax.swing.JLabel();
         totalLabel = new javax.swing.JLabel();
         totalField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        productsTable = new javax.swing.JTable();
         exitBtn = new javax.swing.JButton();
         saveBtn = new javax.swing.JButton();
+        jSpinner1 = new javax.swing.JSpinner();
+        quantityLabel1 = new javax.swing.JLabel();
+        totalField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         mailLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -101,29 +138,22 @@ public class Cashier extends javax.swing.JFrame {
                 productFieldActionPerformed(evt);
             }
         });
-        bgPanel.add(productField, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 67, 177, -1));
-
-        quantityField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quantityFieldActionPerformed(evt);
-            }
-        });
-        bgPanel.add(quantityField, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 107, 177, -1));
+        bgPanel.add(productField, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 60, 177, 30));
 
         productLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         productLabel.setText("Product");
-        bgPanel.add(productLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 65, -1, -1));
+        bgPanel.add(productLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 60, -1, -1));
 
         quantityLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         quantityLabel.setText("Quantity");
-        bgPanel.add(quantityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 107, -1, -1));
+        bgPanel.add(quantityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, -1, -1));
 
         totalLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         totalLabel.setText("Total");
-        bgPanel.add(totalLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 154, -1, -1));
-        bgPanel.add(totalField, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 155, 177, -1));
+        bgPanel.add(totalLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 160, 60, -1));
+        bgPanel.add(totalField, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 160, 110, 30));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        productsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -146,13 +176,13 @@ public class Cashier extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
+        productsTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(productsTable);
+        if (productsTable.getColumnModel().getColumnCount() > 0) {
+            productsTable.getColumnModel().getColumn(0).setResizable(false);
+            productsTable.getColumnModel().getColumn(1).setResizable(false);
+            productsTable.getColumnModel().getColumn(2).setResizable(false);
+            productsTable.getColumnModel().getColumn(3).setResizable(false);
         }
 
         bgPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 202, 607, 241));
@@ -172,28 +202,63 @@ public class Cashier extends javax.swing.JFrame {
             }
         });
         bgPanel.add(saveBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(546, 64, -1, 30));
+        bgPanel.add(jSpinner1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 100, 30));
+
+        quantityLabel1.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        quantityLabel1.setText("Current Quantity");
+        bgPanel.add(quantityLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
+        bgPanel.add(totalField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 100, 180, 30));
+
+        jButton1.setText("ADD PRODUCT");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        bgPanel.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, -1, 30));
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
-
-        mailLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(mailLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void quantityFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantityFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_quantityFieldActionPerformed
-
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         // TODO add your handling code here:
         //save to DB
         //decrement quantity
+         try 
+         {
+        boolean success = deoController.saveSales(salesList, branchID);
+        if (success) 
+        {
+            JOptionPane.showMessageDialog(this, "Products successfully saved!");
+            productList.clear();
+            tableModel.setRowCount(0); // Clear the table
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to save products.");
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error saving products: " + e.getMessage());
+    }
+        
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void productFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productFieldActionPerformed
         // TODO add your handling code here:
+         if (productField.getSelectedIndex() > 0) {
+        try {
+            String selectedProduct = (String) productField.getSelectedItem();
+            int currentQuantity = deoController.getCurrentQuantityOfProduct(branchID, selectedProduct);
+            totalField1.setText(String.valueOf(currentQuantity));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error fetching product quantity: " + e.getMessage());
+        }
+    } else {
+        totalField1.setText("");
+    }
+    enableBtn();
     }//GEN-LAST:event_productFieldActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
@@ -202,6 +267,39 @@ public class Cashier extends javax.swing.JFrame {
         l.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if (productField.getSelectedIndex() == 0 || (int) jSpinner1.getValue() <= 0) 
+        {
+        JOptionPane.showMessageDialog(this, "Please select a valid product and enter a valid quantity.");
+        return;
+    }
+
+    String productName = (String) productField.getSelectedItem();
+    int quantity = (int) jSpinner1.getValue();
+    int salesPrice = deoController.getSalesPrice(productName); // Replace with actual price fetched if applicable
+    int total = quantity * salesPrice;
+    if(quantity<0)
+    {
+                JOptionPane.showMessageDialog(this, "Error adding product: " + "Quantity cannot be negative");
+                return;
+    }
+
+    // Add to table
+    tableModel.addRow(new Object[]{productName, quantity, salesPrice, total});
+
+    // Add to list
+    //productList.add(new Product(productName, quantity, salesPrice));
+    salesList.add(new Sale(productName, quantity, salesPrice));
+
+    // Reset fields
+    jSpinner1.setValue(0);
+    productField.setSelectedIndex(0);
+    totalField1.setText("");
+    enableBtn();
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -242,15 +340,18 @@ public class Cashier extends javax.swing.JFrame {
     private javax.swing.JPanel bgPanel;
     private javax.swing.JButton exitBtn;
     private javax.swing.JLabel heading;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JLabel mailLabel;
     private javax.swing.JComboBox<String> productField;
     private javax.swing.JLabel productLabel;
-    private javax.swing.JTextField quantityField;
+    private javax.swing.JTable productsTable;
     private javax.swing.JLabel quantityLabel;
+    private javax.swing.JLabel quantityLabel1;
     private javax.swing.JButton saveBtn;
     private javax.swing.JTextField totalField;
+    private javax.swing.JTextField totalField1;
     private javax.swing.JLabel totalLabel;
     // End of variables declaration//GEN-END:variables
 }

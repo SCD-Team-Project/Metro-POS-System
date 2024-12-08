@@ -418,6 +418,7 @@ private void populateVendorDropdown()
        }
        else
        {
+            //here comes the product k liay add button click ho to uska wo code
            try
            {//here comes the product k liay add button click ho to uska wo code
            String productName = nameField.getText().trim();
