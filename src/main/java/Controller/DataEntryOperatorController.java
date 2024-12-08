@@ -1,6 +1,7 @@
 
 package Controller;
 
+import Model.Category;
 import Model.DataEntryOperator.DataEntryOperatorService;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class DataEntryOperatorController
         return DEOService.getAllVendorNames();
     }
     
-    public List<String> getAllCategories()
+    public List<Category> getAllCategories()
     {
         return DEOService.getAllCategories();
     }

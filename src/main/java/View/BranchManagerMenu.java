@@ -31,6 +31,7 @@ public class BranchManagerMenu extends javax.swing.JFrame {
         addCashierbtn = new javax.swing.JButton();
         addDEObtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
+        updateBtn = new javax.swing.JButton();
         mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -39,11 +40,9 @@ public class BranchManagerMenu extends javax.swing.JFrame {
 
         bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
         bgPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         heading.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
         heading.setText("Branch Manager");
-        bgPanel.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(88, 26, -1, -1));
 
         addCashierbtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         addCashierbtn.setText("Add Cashier");
@@ -53,7 +52,6 @@ public class BranchManagerMenu extends javax.swing.JFrame {
                 addCashierbtnActionPerformed(evt);
             }
         });
-        bgPanel.add(addCashierbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 103, 154, 50));
 
         addDEObtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         addDEObtn.setText("Add Data-Entry Operator");
@@ -63,7 +61,6 @@ public class BranchManagerMenu extends javax.swing.JFrame {
                 addDEObtnActionPerformed(evt);
             }
         });
-        bgPanel.add(addDEObtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 171, -1, 50));
 
         logoutBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         logoutBtn.setText("Logout");
@@ -73,7 +70,48 @@ public class BranchManagerMenu extends javax.swing.JFrame {
                 logoutBtnActionPerformed(evt);
             }
         });
-        bgPanel.add(logoutBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 239, 154, 50));
+
+        updateBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        updateBtn.setText("Update/Delete");
+        updateBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        updateBtn.setMaximumSize(new java.awt.Dimension(48, 24));
+        updateBtn.setPreferredSize(new java.awt.Dimension(48, 24));
+
+        javax.swing.GroupLayout bgPanelLayout = new javax.swing.GroupLayout(bgPanel);
+        bgPanel.setLayout(bgPanelLayout);
+        bgPanelLayout.setHorizontalGroup(
+            bgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bgPanelLayout.createSequentialGroup()
+                .addGroup(bgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(bgPanelLayout.createSequentialGroup()
+                        .addGap(87, 87, 87)
+                        .addComponent(heading))
+                    .addGroup(bgPanelLayout.createSequentialGroup()
+                        .addGap(123, 123, 123)
+                        .addComponent(addCashierbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(bgPanelLayout.createSequentialGroup()
+                        .addGap(123, 123, 123)
+                        .addGroup(bgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addDEObtn)
+                            .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(75, 75, 75))
+        );
+        bgPanelLayout.setVerticalGroup(
+            bgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bgPanelLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(heading)
+                .addGap(33, 33, 33)
+                .addComponent(addCashierbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(addDEObtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 60, 410, 380));
 
@@ -148,5 +186,6 @@ public class BranchManagerMenu extends javax.swing.JFrame {
     private javax.swing.JLabel heading;
     private javax.swing.JButton logoutBtn;
     private javax.swing.JLabel mainLabel;
+    private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 }

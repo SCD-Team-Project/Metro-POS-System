@@ -4,19 +4,17 @@
  */
 package View;
 
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author Dell
  */
-public class SplashScreen extends javax.swing.JFrame {
+public class ChangePassword extends javax.swing.JFrame {
 
     /**
-     * Creates new form SplashScreen
+     * Creates new form ChangePassword
      */
-    public SplashScreen() {
-        initComponents();    
+    public ChangePassword() {
+        initComponents();
     }
 
     /**
@@ -29,13 +27,17 @@ public class SplashScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         bgPanel = new javax.swing.JPanel();
-        loading = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        loadingPercent = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        oldPasslabel = new javax.swing.JLabel();
+        newPasslabel = new javax.swing.JLabel();
+        oldPassfield = new javax.swing.JTextField();
+        newPassfield = new javax.swing.JTextField();
+        exitBtn = new javax.swing.JButton();
+        submitBtn = new javax.swing.JButton();
         mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Loading");
+        setTitle("ChangePassword");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
@@ -43,16 +45,27 @@ public class SplashScreen extends javax.swing.JFrame {
         bgPanel.setPreferredSize(new java.awt.Dimension(660, 460));
         bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        loading.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        loading.setText("Loading...");
-        bgPanel.add(loading, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, 230, 30));
-        bgPanel.add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 560, 40));
+        jLabel1.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
+        jLabel1.setText("Change Password");
+        bgPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, -1, -1));
 
-        loadingPercent.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        loadingPercent.setText("0%");
-        bgPanel.add(loadingPercent, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, 50, 30));
+        oldPasslabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        oldPasslabel.setText("Enter Old Password");
+        bgPanel.add(oldPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 99, -1, -1));
 
-        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 170, 670, 170));
+        newPasslabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        newPasslabel.setText("Enter New Password\n");
+        bgPanel.add(newPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 219, -1, -1));
+        bgPanel.add(oldPassfield, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 159, 352, -1));
+        bgPanel.add(newPassfield, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 287, 360, -1));
+
+        exitBtn.setText("EXIT");
+        bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 349, -1, 41));
+
+        submitBtn.setText("SUBMIT");
+        bgPanel.add(submitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 349, -1, 41));
+
+        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
 
         mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
@@ -78,52 +91,33 @@ public class SplashScreen extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SplashScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChangePassword.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SplashScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChangePassword.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SplashScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChangePassword.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SplashScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChangePassword.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-       SplashScreen s=new SplashScreen();
-       s.setVisible(true);
-       
-       try{
-       for(int i=0;i<=100;i++){
-           Thread.sleep(100);
-           s.loadingPercent.setText(i+"%");
-           
-           if(i==20){
-               s.loading.setText("Turning on Modules");
-               
-           }
-            if(i==40){
-               s.loading.setText("Loading Modules");
-               
-           }
-            if(i==60){
-                 s.loading.setText("Starting");
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ChangePassword().setVisible(true);
             }
-             if(i==90){
-                 s.loading.setText("Launching Application");
-            }
-            s.jProgressBar1.setValue(i);
-       }
-       }
-       catch(Exception e){
-           JOptionPane.showMessageDialog(null, e);
-       }
-               
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bgPanel;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JLabel loading;
-    private javax.swing.JLabel loadingPercent;
+    private javax.swing.JButton exitBtn;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel mainLabel;
+    private javax.swing.JTextField newPassfield;
+    private javax.swing.JLabel newPasslabel;
+    private javax.swing.JTextField oldPassfield;
+    private javax.swing.JLabel oldPasslabel;
+    private javax.swing.JButton submitBtn;
     // End of variables declaration//GEN-END:variables
 }

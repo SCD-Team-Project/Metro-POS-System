@@ -11,17 +11,17 @@ import javax.swing.event.DocumentListener;
  *
  * @author Dell
  */
-public class AddCashier extends javax.swing.JFrame {
+public class AddDEO extends javax.swing.JFrame {
 
     /**
-     * Creates new form AddCashier
+     * Creates new form AddDEO
      */
-    public AddCashier() {
+    public AddDEO() {
         initComponents();
         addBtn.setEnabled(false);
         addChecks();
     }
-     private void enableBtn(){
+    private void enableBtn(){
         if(!nameField.getText().isEmpty()&&!addressField.getText().isEmpty()&&phoneField.getText().length()==11&&!emailField.getText().isEmpty()&&!salaryField.getText().isEmpty()){
             addBtn.setEnabled(true);
         }
@@ -54,6 +54,7 @@ public class AddCashier extends javax.swing.JFrame {
         salaryField.getDocument().addDocumentListener(listener);
     }
 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -68,7 +69,7 @@ public class AddCashier extends javax.swing.JFrame {
         nameLabel = new javax.swing.JLabel();
         phoneLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
-        SalaryLabel = new javax.swing.JLabel();
+        salaryLabel = new javax.swing.JLabel();
         addressLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
         phoneField = new javax.swing.JTextField();
@@ -81,7 +82,7 @@ public class AddCashier extends javax.swing.JFrame {
         mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("BranchManager-Add Cashier");
+        setTitle("BranchManager-Add DEO");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         bgPanel.setBackground(new java.awt.Color(255, 255, 255,200));
@@ -90,51 +91,62 @@ public class AddCashier extends javax.swing.JFrame {
         bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         heading.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
-        heading.setText("Add Cashier");
-        bgPanel.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(249, 7, -1, -1));
+        heading.setText("Add Data-Entry Operator");
+        bgPanel.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(156, 7, -1, -1));
 
         nameLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         nameLabel.setText("Name");
-        bgPanel.add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 72, -1, -1));
+        bgPanel.add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(109, 69, -1, -1));
 
         phoneLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         phoneLabel.setText("Phone");
-        bgPanel.add(phoneLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 72, -1, -1));
+        bgPanel.add(phoneLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(386, 69, -1, -1));
 
         emailLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         emailLabel.setText("Email");
-        bgPanel.add(emailLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 159, -1, -1));
+        bgPanel.add(emailLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(109, 150, -1, -1));
 
-        SalaryLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        SalaryLabel.setText("Salary");
-        bgPanel.add(SalaryLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 159, -1, -1));
+        salaryLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        salaryLabel.setText("Salary");
+        bgPanel.add(salaryLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(386, 150, -1, -1));
 
         addressLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         addressLabel.setText("Address");
-        bgPanel.add(addressLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 258, -1, -1));
+        bgPanel.add(addressLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(109, 237, -1, -1));
 
         nameField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 108, 170, 33));
+        nameField.setPreferredSize(new java.awt.Dimension(170, 33));
+        bgPanel.add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(109, 111, -1, -1));
 
         phoneField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 108, 170, 33));
+        phoneField.setPreferredSize(new java.awt.Dimension(170, 33));
+        phoneField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                phoneFieldActionPerformed(evt);
+            }
+        });
+        bgPanel.add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(386, 111, -1, -1));
 
         emailField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(emailField, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 207, 170, 33));
+        emailField.setPreferredSize(new java.awt.Dimension(170, 33));
+        bgPanel.add(emailField, new org.netbeans.lib.awtextra.AbsoluteConstraints(109, 186, -1, -1));
 
         salaryField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(salaryField, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 207, 170, 33));
+        salaryField.setPreferredSize(new java.awt.Dimension(170, 33));
+        bgPanel.add(salaryField, new org.netbeans.lib.awtextra.AbsoluteConstraints(386, 186, -1, -1));
 
         addressField.setColumns(20);
         addressField.setRows(5);
+        addressField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jScrollPane1.setViewportView(addressField);
 
-        bgPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 294, 463, 72));
+        bgPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(109, 273, 447, 66));
 
         addBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         addBtn.setText("ADD");
         addBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        bgPanel.add(addBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 400, 95, 36));
+        addBtn.setPreferredSize(new java.awt.Dimension(32, 24));
+        bgPanel.add(addBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(364, 380, 95, 36));
 
         exitBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         exitBtn.setText("EXIT");
@@ -144,19 +156,24 @@ public class AddCashier extends javax.swing.JFrame {
                 exitBtnActionPerformed(evt);
             }
         });
-        bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 92, 33));
+        bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(181, 380, 95, 36));
 
-        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, 670, -1));
+        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
 
         mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
-        pack();
+        setSize(new java.awt.Dimension(1059, 608));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void phoneFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_phoneFieldActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
         // TODO add your handling code here:
-          BranchManagerMenu menu=new BranchManagerMenu();
+        BranchManagerMenu menu=new BranchManagerMenu();
         menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_exitBtnActionPerformed
@@ -178,27 +195,25 @@ public class AddCashier extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddCashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDEO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddCashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDEO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddCashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDEO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddCashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDEO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
-                new AddCashier().setVisible(true);
+                new AddDEO().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel SalaryLabel;
     private javax.swing.JButton addBtn;
     private javax.swing.JTextArea addressField;
     private javax.swing.JLabel addressLabel;
@@ -214,6 +229,6 @@ public class AddCashier extends javax.swing.JFrame {
     private javax.swing.JTextField phoneField;
     private javax.swing.JLabel phoneLabel;
     private javax.swing.JTextField salaryField;
+    private javax.swing.JLabel salaryLabel;
     // End of variables declaration//GEN-END:variables
 }
- 
