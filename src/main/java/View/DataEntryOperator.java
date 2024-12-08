@@ -4,23 +4,165 @@
  */
 package View;
 
+import Controller.DataEntryOperatorController;
+import Model.Category;
+import Model.DataEntryOperator.DataEntryOperatorService;
+import Model.Product;
+import Model.UserSession;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Dell
  */
-public class DataEntryOperator extends javax.swing.JFrame {
+public class DataEntryOperator extends javax.swing.JFrame 
+{
 
     /**
      * Creates new form DataEntryOperator
      */
-    public DataEntryOperator() {
+    DataEntryOperatorController deoController;
+    private List<Product> productList = new ArrayList<>();
+    private DefaultTableModel tableModel;
+    public DataEntryOperator() 
+    {
         initComponents();
         categoryLabel.setVisible(false);
         categoryField.setVisible(false);
         addVbtn.setEnabled(false);
         addProduct.setEnabled(false);
         vendorPanel.setVisible(false);
+        salespricelabel.setVisible(false);
+        salespricefield.setVisible(false);
+        deoController=DataEntryOperatorController.getInstance(new DataEntryOperatorService());
+        populateVendorDropdown();
+        setupTable();
+        toggleProductFields(false);
+       populateCategoryDropdown();
     }
+     private void populateCategoryDropdown() 
+     {
+        categoryField.removeAllItems(); // Clear existing items
+        List<Category> categories = deoController.getAllCategories(); // Get categories from controller
+        if (categories != null && !categories.isEmpty())
+        {
+            for (Category category : categories)
+            {
+                categoryField.addItem(category.getCategoryName()); // Add category names to the dropdown
+            }
+        }
+    }
+     private void toggleProductFields(boolean visible) 
+     {
+        categoryLabel.setVisible(visible);
+        categoryField.setVisible(visible);
+        salespricelabel.setVisible(visible);
+        salespricefield.setVisible(visible);
+        jScrollPane1.setVisible(visible);
+
+        addressField.setEnabled(!visible);
+        nameField.setEnabled(!visible);
+        phonenpruchasepriceField2.setEnabled(!visible);
+    }
+    private void setupTable()
+    {
+        tableModel = new DefaultTableModel(new Object[]{"Product Name", "Quantity", "Category"}, 0);
+        productTable.setModel(tableModel);
+
+        // Add Action Button to Delete Product
+        //productTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
+        //productTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox(), this));
+    }
+     private void addProductToTable(Product product) 
+     {
+        //JButton deleteButton = new JButton("Delete");
+        tableModel.addRow(new Object[]{product.getProductName(), product.getStockQuantity(), product.getCategoryID()});
+    }
+
+    private void removeProductFromListAndTable(int rowIndex) 
+    {
+        productList.remove(rowIndex);
+        tableModel.removeRow(rowIndex);
+    }
+    private void saveAllProducts() 
+    {
+        if (productList.isEmpty()) 
+        {
+            JOptionPane.showMessageDialog(this, "No products to save!");
+            return;
+        }
+
+        int branchID = UserSession.getBranchID();
+        int vendorID = deoController.getVendorID((String) venderField.getSelectedItem());  //return -1 if vendorID not found
+        boolean success = deoController.addProducts(branchID, vendorID, productList);
+
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Products saved successfully!");
+            productList.clear();
+            tableModel.setRowCount(0); // Clear the table
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to save products!");
+        }
+    }
+
+    private void resetVendorFormFields() 
+    {
+    nameField.setText("");
+    phonenpruchasepriceField2.setText("");
+    emailnquantityField.setText("");
+    addressField.setText("");
+    venderField.setSelectedIndex(0); // Reset dropdown
+}
+    /*
+     private void clearProductFields() {
+    productNameField.setText("");
+    productCategoryField.setSelectedIndex(0);
+    productPriceField.setText("");
+     }
+    private void populateCategoryDropdown() {
+    productCategoryField.removeAllItems();
+    List<Category> categories = deoController.getAllCategories();
+    if (categories != null && !categories.isEmpty()) {
+        for (Category category : categories) {
+            productCategoryField.addItem(category.getCategoryName());
+        }
+    }
+}*/
+   /* private void saveAllProducts() {
+    if (productList.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No products to save!");
+        return;
+    }
+
+    boolean success = deoController.addProducts(productList);
+    if (success) {
+        JOptionPane.showMessageDialog(this, "Products saved successfully!");
+        productList.clear();
+        updateProductTable();
+    } else {
+        JOptionPane.showMessageDialog(this, "Failed to save products!");
+    }
+}*/
+private void populateVendorDropdown() 
+{
+    venderField.removeAllItems(); // Clear existing items
+    //venderField.addItem("Other"); // Add a blank option
+
+    List<String> vendorNames = deoController.getAllVendorNames(); // Get vendor names from controller
+    if (vendorNames != null&& !vendorNames.isEmpty()) 
+    {
+        for (String vendor : vendorNames) 
+        {
+            venderField.addItem(vendor); // Add each vendor to the dropdown
+        }
+    }
+    venderField.addItem("Other");
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,6 +173,7 @@ public class DataEntryOperator extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        phoneField = new javax.swing.JTextField();
         bgPane = new javax.swing.JPanel();
         heading = new javax.swing.JLabel();
         vendorLabel = new javax.swing.JLabel();
@@ -39,18 +182,24 @@ public class DataEntryOperator extends javax.swing.JFrame {
         vendorPanel = new javax.swing.JPanel();
         heading2 = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
-        phoneLabel = new javax.swing.JLabel();
-        emailLabel = new javax.swing.JLabel();
+        emailnquantityLabel = new javax.swing.JLabel();
         addressLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
-        phoneField = new javax.swing.JTextField();
-        emailField = new javax.swing.JTextField();
+        emailnquantityField = new javax.swing.JTextField();
         addbtn = new javax.swing.JButton();
         exitBtn = new javax.swing.JButton();
         categoryLabel = new javax.swing.JLabel();
         categoryField = new javax.swing.JComboBox<>();
         addressField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        productTable = new javax.swing.JTable();
+        salespricelabel = new javax.swing.JLabel();
+        salespricefield = new javax.swing.JTextField();
+        phonenpurchasepricelabel = new javax.swing.JLabel();
+        phonenpruchasepriceField2 = new javax.swing.JTextField();
+        saveAllProducts = new javax.swing.JButton();
         addProduct = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -101,20 +250,15 @@ public class DataEntryOperator extends javax.swing.JFrame {
         nameLabel.setText("Name");
         vendorPanel.add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, -1, -1));
 
-        phoneLabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        phoneLabel.setText("Phone");
-        vendorPanel.add(phoneLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
-
-        emailLabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        emailLabel.setText("Email");
-        vendorPanel.add(emailLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 170, -1, -1));
+        emailnquantityLabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        emailnquantityLabel.setText("Email");
+        vendorPanel.add(emailnquantityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 173, -1, 20));
 
         addressLabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         addressLabel.setText("Address");
         vendorPanel.add(addressLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, -1, -1));
         vendorPanel.add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 172, -1));
-        vendorPanel.add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 140, 172, -1));
-        vendorPanel.add(emailField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 200, 172, -1));
+        vendorPanel.add(emailnquantityField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 200, 172, -1));
 
         addbtn.setText("ADD");
         addbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -134,10 +278,15 @@ public class DataEntryOperator extends javax.swing.JFrame {
 
         categoryLabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         categoryLabel.setText("Category");
-        vendorPanel.add(categoryLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 240, -1, -1));
+        vendorPanel.add(categoryLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 200, -1, -1));
 
         categoryField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        vendorPanel.add(categoryField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, 170, -1));
+        categoryField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categoryFieldActionPerformed(evt);
+            }
+        });
+        vendorPanel.add(categoryField, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 230, 170, 30));
 
         addressField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,6 +294,45 @@ public class DataEntryOperator extends javax.swing.JFrame {
             }
         });
         vendorPanel.add(addressField, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, 250, 70));
+
+        productTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(productTable);
+
+        vendorPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, 230, 130));
+
+        salespricelabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        salespricelabel.setText("Sales Price");
+        vendorPanel.add(salespricelabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, -1, -1));
+        vendorPanel.add(salespricefield, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, 172, -1));
+
+        phonenpurchasepricelabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        phonenpurchasepricelabel.setText("Phone");
+        vendorPanel.add(phonenpurchasepricelabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
+
+        phonenpruchasepriceField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                phonenpruchasepriceField2ActionPerformed(evt);
+            }
+        });
+        vendorPanel.add(phonenpruchasepriceField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 140, 172, -1));
+
+        saveAllProducts.setText("SAVE ALL");
+        saveAllProducts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAllProductsActionPerformed(evt);
+            }
+        });
+        vendorPanel.add(saveAllProducts, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 190, -1, -1));
 
         bgPane.add(vendorPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 114, 544, 328));
 
@@ -157,10 +345,9 @@ public class DataEntryOperator extends javax.swing.JFrame {
             }
         });
         bgPane.add(addProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(569, 63, 25, 33));
+        bgPane.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         getContentPane().add(bgPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
-
-        mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
@@ -169,25 +356,128 @@ public class DataEntryOperator extends javax.swing.JFrame {
 
     private void venderFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_venderFieldActionPerformed
         // TODO add your handling code here:
-        if(venderField.getSelectedIndex()>0){
-            addVbtn.setEnabled(false);
-            addProduct.setEnabled(true);
-        }
-        else{
-            addVbtn.setEnabled(true);
+        //also here the vendoxcombonox items will come from the getAllVendorNames() function in DEOControllerClass
+        
+          if ("Other".equals(venderField.getSelectedItem())) 
+          {
+            addVbtn.setEnabled(true);  // Enable "Add New Vendor" button
             addProduct.setEnabled(false);
-        }
+          } 
+          else
+          {
+            addVbtn.setEnabled(false); // Disable "Add New Vendor" button
+            addProduct.setEnabled(true);
+          }
     }//GEN-LAST:event_venderFieldActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
         // TODO add your handling code here:
        //add the things to DB logic
+       //the new vendor will be added to the db aka:
+       //the controller of DEO will be called its function is this:
+       //deoController.addNewVendor(vendorName, phoneNumber, email, address);
+       if (heading2.getText().equals("Add New Vendor"))
+       {
+        String vendorName = nameField.getText();
+        String phoneNumber = phonenpruchasepriceField2.getText();
+        String email = emailnquantityField.getText();
+        String address = addressField.getText();
+
+        if (!vendorName.isEmpty() && !phoneNumber.isEmpty()&& !email.isEmpty()&&!address.isEmpty()) 
+        {
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) 
+            {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid email format!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!phoneNumber.matches("\\d{11}")) 
+            {
+                javax.swing.JOptionPane.showMessageDialog(this, "Phone number must be exactly 11 digits!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            boolean result=deoController.addNewVendor(vendorName, phoneNumber, email, address);
+            if(result)
+            {
+                JOptionPane.showMessageDialog(this, "Vendor added successfully!");
+                vendorPanel.setVisible(false);
+                resetVendorFormFields();
+                populateVendorDropdown(); // Refresh dropdown
+            }
+            else
+            {
+                 JOptionPane.showMessageDialog(this, "Failed to add vendor. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        }
+        else 
+        {
+            JOptionPane.showMessageDialog(this, "Please fill all the fields!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+       //also the 
+       
+       }
+       else
+       {
+           try
+           {//here comes the product k liay add button click ho to uska wo code
+           String productName = nameField.getText().trim();
+            String quantityText = emailnquantityField.getText().trim();
+            String category = (String) categoryField.getSelectedItem();
+            String salesPriceText = salespricefield.getText().trim();
+            String purchasedPriceText = phonenpruchasepriceField2.getText().trim();
         
+        // Check for empty fields
+        if (productName.isEmpty() || quantityText.isEmpty() || category == null || salesPriceText.isEmpty() || purchasedPriceText.isEmpty()) {
+             JOptionPane.showMessageDialog(null, "All Fields must be filled","Error Message", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        // Parse integers with validation
+        int quantity = Integer.parseInt(quantityText);
+        int salesPrice = Integer.parseInt(salesPriceText);
+        int purchasedPrice = Integer.parseInt(purchasedPriceText);
+        
+        // Get category ID using the controller
+        int categoryID = deoController.getCategoryID(category);
+        
+        // Create a new product object and add it to the list
+        Product product = new Product(productName, categoryID, purchasedPrice, salesPrice, quantity);
+        productList.add(product);
+        
+        // Add product to table
+        addProductToTable(product);
+        
+        // Clear input fields
+        nameField.setText("");
+        emailnquantityField.setText("");
+        salespricefield.setText("");
+        phonenpruchasepriceField2.setText("");
+        
+        // Optional: Provide feedback that product was added successfully
+        JOptionPane.showMessageDialog(null, "Product added successfully!");
+
+    } 
+    catch (NumberFormatException e) 
+    {
+        // Handle invalid number format
+        JOptionPane.showMessageDialog(null, "Please enter valid numbers for quantity, sales price, and purchase price.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+    } catch (IllegalArgumentException e) {
+        // Handle empty fields
+        JOptionPane.showMessageDialog(null, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        // Catch any other unexpected exceptions
+        JOptionPane.showMessageDialog(null, "An unexpected error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+           
+           nameField.setText("");
+           emailnquantityField.setText("");
+           salespricefield.setText("");
+           phonenpruchasepriceField2.setText("");
+       }
     }//GEN-LAST:event_addbtnActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
         // TODO add your handling code here:
-        Login l=new Login();
+       Login l=new Login();
         l.setVisible(true);
         this.dispose();
         
@@ -197,31 +487,60 @@ public class DataEntryOperator extends javax.swing.JFrame {
     private void addVbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addVbtnActionPerformed
         // TODO add your handling code here:
         heading2.setText("Add New Vendor");
-        emailLabel.setText("Email");
-        phoneLabel.setText("Phone");
+        emailnquantityLabel.setText("Email");
+        phonenpurchasepricelabel.setText("Phone");
+        
         categoryLabel.setVisible(false);
         categoryField.setVisible(false);
+        
         addressLabel.setVisible(true);
         addressField.setVisible(true);
+        
         vendorPanel.setVisible(true);
+        
+        salespricefield.setVisible(false);
+        salespricelabel.setVisible(false);
+        
+        productTable.setVisible(false);
     }//GEN-LAST:event_addVbtnActionPerformed
 
     private void addProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProductActionPerformed
         // TODO add your handling code here:
          
         heading2.setText("Add New Product");
-        emailLabel.setText("Quantity");
-        phoneLabel.setText("Price");
+        emailnquantityLabel.setText("Quantity");
+        phonenpurchasepricelabel.setText("Price Per Unit");
+        addbtn.setText("Add");
         categoryLabel.setVisible(true);
         categoryField.setVisible(true);
+        
         addressLabel.setVisible(false);
         addressField.setVisible(false);
+        
         vendorPanel.setVisible(true);
+        
+        salespricefield.setVisible(true);
+        salespricelabel.setVisible(true);
+        
+        productTable.setVisible(true);
     }//GEN-LAST:event_addProductActionPerformed
 
     private void addressFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_addressFieldActionPerformed
+
+    private void categoryFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_categoryFieldActionPerformed
+
+    private void phonenpruchasepriceField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phonenpruchasepriceField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_phonenpruchasepriceField2ActionPerformed
+
+    private void saveAllProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAllProductsActionPerformed
+        // TODO add your handling code here:
+        saveAllProducts();
+    }//GEN-LAST:event_saveAllProductsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -267,16 +586,23 @@ public class DataEntryOperator extends javax.swing.JFrame {
     private javax.swing.JPanel bgPane;
     private javax.swing.JComboBox<String> categoryField;
     private javax.swing.JLabel categoryLabel;
-    private javax.swing.JTextField emailField;
-    private javax.swing.JLabel emailLabel;
+    private javax.swing.JTextField emailnquantityField;
+    private javax.swing.JLabel emailnquantityLabel;
     private javax.swing.JButton exitBtn;
     private javax.swing.JLabel heading;
     private javax.swing.JLabel heading2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel mainLabel;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField phoneField;
-    private javax.swing.JLabel phoneLabel;
+    private javax.swing.JTextField phonenpruchasepriceField2;
+    private javax.swing.JLabel phonenpurchasepricelabel;
+    private javax.swing.JTable productTable;
+    private javax.swing.JTextField salespricefield;
+    private javax.swing.JLabel salespricelabel;
+    private javax.swing.JButton saveAllProducts;
     private javax.swing.JComboBox<String> venderField;
     private javax.swing.JLabel vendorLabel;
     private javax.swing.JPanel vendorPanel;

@@ -139,8 +139,8 @@ public class BranchManagerMenu extends javax.swing.JFrame {
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         // TODO add your handling code here:
         //show the login SCreen
-        Login l=new Login();
-        l.setVisible(true);
+       // Login l=new Login();
+       // l.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_logoutBtnActionPerformed
 

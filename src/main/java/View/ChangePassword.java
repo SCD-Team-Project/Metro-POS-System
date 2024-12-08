@@ -4,6 +4,11 @@
  */
 package View;
 
+import Controller.EmployeeController;
+import Model.Employee.EmployeeService;
+import Model.EmployeeType;
+import Model.UserSession;
+
 /**
  *
  * @author Dell
@@ -13,7 +18,10 @@ public class ChangePassword extends javax.swing.JFrame {
     /**
      * Creates new form ChangePassword
      */
-    public ChangePassword() {
+    EmployeeController employeeController;
+    public ChangePassword() 
+    {
+        employeeController=EmployeeController.getInstance(new EmployeeService());
         initComponents();
     }
 
@@ -28,12 +36,12 @@ public class ChangePassword extends javax.swing.JFrame {
 
         bgPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        oldPasslabel = new javax.swing.JLabel();
         newPasslabel = new javax.swing.JLabel();
-        oldPassfield = new javax.swing.JTextField();
-        newPassfield = new javax.swing.JTextField();
+        confirmNewPasslabel = new javax.swing.JLabel();
         exitBtn = new javax.swing.JButton();
         submitBtn = new javax.swing.JButton();
+        confirmPassField = new javax.swing.JPasswordField();
+        newPassField = new javax.swing.JPasswordField();
         mainLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -49,30 +57,104 @@ public class ChangePassword extends javax.swing.JFrame {
         jLabel1.setText("Change Password");
         bgPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, -1, -1));
 
-        oldPasslabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        oldPasslabel.setText("Enter Old Password");
-        bgPanel.add(oldPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 99, -1, -1));
-
         newPasslabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        newPasslabel.setText("Enter New Password\n");
-        bgPanel.add(newPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 219, -1, -1));
-        bgPanel.add(oldPassfield, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 159, 352, -1));
-        bgPanel.add(newPassfield, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 287, 360, -1));
+        newPasslabel.setText("Enter New Password ");
+        bgPanel.add(newPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 99, -1, -1));
+
+        confirmNewPasslabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        confirmNewPasslabel.setText("Confirm New Password ");
+        bgPanel.add(confirmNewPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 219, -1, -1));
 
         exitBtn.setText("EXIT");
+        exitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitBtnActionPerformed(evt);
+            }
+        });
         bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 349, -1, 41));
 
         submitBtn.setText("SUBMIT");
+        submitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitBtnActionPerformed(evt);
+            }
+        });
         bgPanel.add(submitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 349, -1, 41));
 
-        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
+        confirmPassField.setText("jPasswordField1");
+        bgPanel.add(confirmPassField, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 260, 350, 50));
 
-        mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
+        newPassField.setText("jPasswordField1");
+        bgPanel.add(newPassField, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, 350, 50));
+
+        getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
         getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        UserSession.clear();
+        new Login().setVisible(true);
+        
+    }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        // TODO add your handling code here:
+         String newPassword = newPassField.getText().trim();
+         String confirmPassword = confirmPassField.getText().trim();
+         if (newPassword.isEmpty() || confirmPassword.isEmpty()) 
+         {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+            "Please fill in both fields.", 
+            "Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+         if (!newPassword.equals(confirmPassword)) 
+         {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+            "Passwords do not match. Please try again.", 
+            "Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+            boolean success = employeeController.changePassword(Integer.parseInt(UserSession.getUsername()),EmployeeType.valueOf(UserSession.getType().toUpperCase()) , newPassword);
+    
+        if (success) 
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+            "Password changed successfully!", 
+            "Success", 
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            this.setVisible(false);
+            if(EmployeeType.valueOf(EmployeeType.BRANCH_MANAGER.equals(UserSession.getType().toUpperCase())))
+            {
+                new BranchManagerMenu().setVisible(true);
+            }
+            else if(EmployeeType.valueOf(EmployeeType.CASHIER.equals(UserSession.getType().toUpperCase())))
+            {
+                new Cashier().setVisible(true);
+            }
+            else if(EmployeeType.valueOf(EmployeeType.DATA_ENTRY_OPERATOR.equals(UserSession.getType().toUpperCase())))
+            {
+                new DataEntryOperator().setVisible(true);
+            }
+            
+        }
+        else 
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+            "Failed to change password. Please try again.", 
+            "Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+       // employeeController.changePassword(UserSession.getUsername(),UserSession.getType(), newPassword);
+        
+    }//GEN-LAST:event_submitBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -111,13 +193,13 @@ public class ChangePassword extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bgPanel;
+    private javax.swing.JLabel confirmNewPasslabel;
+    private javax.swing.JPasswordField confirmPassField;
     private javax.swing.JButton exitBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel mainLabel;
-    private javax.swing.JTextField newPassfield;
+    private javax.swing.JPasswordField newPassField;
     private javax.swing.JLabel newPasslabel;
-    private javax.swing.JTextField oldPassfield;
-    private javax.swing.JLabel oldPasslabel;
     private javax.swing.JButton submitBtn;
     // End of variables declaration//GEN-END:variables
 }
