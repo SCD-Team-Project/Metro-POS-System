@@ -4,6 +4,11 @@
  */
 package View;
 
+import Controller.EmployeeController;
+import Controller.SuperAdminController;
+import Model.SAdmin.SuperAdminService;
+import Model.UserSession;
+
 /**
  *
  * @author Dell
@@ -13,11 +18,16 @@ public class SuperAdminMenu extends javax.swing.JFrame {
     /**
      * Creates new form SuperAdminMenu
      */
+        int branchID;
+        String status;
+        SuperAdminController superAdminController;
+     //EmployeeController employeeController;
     public SuperAdminMenu() {
         initComponents();
-        
+        superAdminController=SuperAdminController.getInstance(new SuperAdminService());
         activateBranchBtn.setEnabled(false);
         deactivateBranchBtn.setEnabled(false);
+         addManagerBtn.setEnabled(false);
     }
 
     /**
@@ -53,41 +63,14 @@ public class SuperAdminMenu extends javax.swing.JFrame {
         bgPanel.add(headingLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(404, 18, -1, -1));
 
         BranchInfo.setForeground(new java.awt.Color(255, 255, 255));
-        BranchInfo.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "BranchCode", "Name", "City", "Address", "Phone", "EmployeeCount", "ManagerID", "Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        BranchInfo.setModel(new BranchTableModel());
+        BranchInfo.getTableHeader().setReorderingAllowed(false);
+        BranchInfo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BranchInfoMouseClicked(evt);
             }
         });
-        BranchInfo.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(BranchInfo);
-        if (BranchInfo.getColumnModel().getColumnCount() > 0) {
-            BranchInfo.getColumnModel().getColumn(0).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(1).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(2).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(3).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(4).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(5).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(6).setResizable(false);
-            BranchInfo.getColumnModel().getColumn(7).setResizable(false);
-        }
 
         bgPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 68, 753, 439));
 
@@ -134,11 +117,14 @@ public class SuperAdminMenu extends javax.swing.JFrame {
         logoutBtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         logoutBtn.setText("Logout");
         logoutBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutBtnActionPerformed(evt);
+            }
+        });
         bgPanel.add(logoutBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(777, 451, 166, 50));
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 950, 510));
-
-        backgroundLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
@@ -148,17 +134,19 @@ public class SuperAdminMenu extends javax.swing.JFrame {
     private void addManagerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addManagerBtnActionPerformed
         // TODO add your handling code here:
         //will take to other add manager screen
-        AddBranchManager add=new AddBranchManager();
-        add.setVisible(true);
+        AddBranchManager add=new AddBranchManager(branchID);
         this.setVisible(false);
+        add.setVisible(true);
+        
     }//GEN-LAST:event_addManagerBtnActionPerformed
 
     private void addBranchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBranchbtnActionPerformed
         // TODO add your handling code here:
         //add branch screen
         AddBranch branch=new AddBranch();
-        branch.setVisible(true);
         this.setVisible(false);
+        branch.setVisible(true);
+        
        
     }//GEN-LAST:event_addBranchbtnActionPerformed
 
@@ -166,12 +154,56 @@ public class SuperAdminMenu extends javax.swing.JFrame {
         // TODO add your handling code here:
         //initially disabled 
         //will be enabled when a row from table is selected and status is false
+        superAdminController.updateBranchStatus(branchID, true);  //aka activate
+        
     }//GEN-LAST:event_activateBranchBtnActionPerformed
 
     private void deactivateBranchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deactivateBranchBtnActionPerformed
         // TODO add your handling code here:
         //same as activate branch
+        superAdminController.updateBranchStatus(branchID, false); //aka deactivate
     }//GEN-LAST:event_deactivateBranchBtnActionPerformed
+
+    private void BranchInfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BranchInfoMouseClicked
+        // TODO add your handling code here:
+        //when mouse will be clicked then something will happen
+        int row = BranchInfo.getSelectedRow(); // Getting the row index
+        if (row != -1) 
+        {
+            status = BranchInfo.getValueAt(row, 7).toString(); 
+            String branchManagerId = BranchInfo.getValueAt(row, 6).toString(); 
+            branchID=Integer.parseInt(BranchInfo.getValueAt(row,0 ).toString());
+            // Enableing/Disableing the buttons based on status
+            if ("Inactive".equalsIgnoreCase(status))
+            {
+                activateBranchBtn.setEnabled(true);
+                deactivateBranchBtn.setEnabled(false);
+            } 
+            else if ("Active".equalsIgnoreCase(status)) 
+            {
+                activateBranchBtn.setEnabled(false);
+                deactivateBranchBtn.setEnabled(true);
+            }
+
+            // Enable/Disable Add Branch Manager button based on the existence of branch manager ID
+            if (branchManagerId.isEmpty() || "null".equals(branchManagerId)||branchManagerId.equals("0"))
+            {
+                addManagerBtn.setEnabled(true);  // Enable the button if no manager is assigned
+            } 
+            else
+            {
+                addManagerBtn.setEnabled(false);  // Disable the button if manager is already assigned
+            }
+    }
+    }//GEN-LAST:event_BranchInfoMouseClicked
+
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        // TODO add your handling code here:
+        UserSession.clear();
+        //showing the login screen again
+        this.setVisible(false);
+        new Login().setVisible(true);
+    }//GEN-LAST:event_logoutBtnActionPerformed
 
     /**
      * @param args the command line arguments

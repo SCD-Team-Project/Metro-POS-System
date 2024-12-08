@@ -4,6 +4,10 @@
  */
 package View;
 
+import Controller.EmployeeController;
+import Model.Employee.EmployeeService;
+import Model.EmployeeType;
+import Model.UserSession;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -21,6 +25,13 @@ public class AddDEO extends javax.swing.JFrame {
         addBtn.setEnabled(false);
         addChecks();
     }
+     private void clearFields() {
+    nameField.setText("");
+    addressField.setText("");
+    phoneField.setText("");
+    emailField.setText("");
+    salaryField.setText("");
+     }
     private void enableBtn(){
         if(!nameField.getText().isEmpty()&&!addressField.getText().isEmpty()&&phoneField.getText().length()==11&&!emailField.getText().isEmpty()&&!salaryField.getText().isEmpty()){
             addBtn.setEnabled(true);
@@ -145,7 +156,11 @@ public class AddDEO extends javax.swing.JFrame {
         addBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         addBtn.setText("ADD");
         addBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        addBtn.setPreferredSize(new java.awt.Dimension(32, 24));
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtnActionPerformed(evt);
+            }
+        });
         bgPanel.add(addBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(364, 380, 95, 36));
 
         exitBtn.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
@@ -159,8 +174,6 @@ public class AddDEO extends javax.swing.JFrame {
         bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(181, 380, 95, 36));
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, -1, -1));
-
-        mainLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(mainLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
@@ -177,6 +190,58 @@ public class AddDEO extends javax.swing.JFrame {
         menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        // TODO add your handling code here:
+        String name = nameField.getText().trim();
+    String phoneNumber = phoneField.getText().trim();
+    String email = emailField.getText().trim();
+    String salaryStr = salaryField.getText().trim();
+    String address = addressField.getText().trim();
+
+    // Validate inputs
+    if (!phoneNumber.matches("\\d{11}")) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Phone number must be exactly 11 digits!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Invalid email format!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    int salary;
+
+    // Validate and parse salary
+    try 
+    {
+        salary = Integer.parseInt(salaryStr);
+    } 
+    catch (NumberFormatException e) 
+    {
+        javax.swing.JOptionPane.showMessageDialog(this, "Invalid salary. Please enter a numeric value.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Add cashier using the controller
+    EmployeeController employeeController = EmployeeController.getInstance(new EmployeeService());
+    int branchID=UserSession.getBranchID();
+    int employeeID = employeeController.addNewEmployee(email, name, EmployeeType.CASHIER, branchID, phoneNumber, address, salary);
+
+    // Check result of adding cashier
+    if (employeeID == 0)
+    {
+        javax.swing.JOptionPane.showMessageDialog(this, "Failed to add DEO. Please try again.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    } 
+    else 
+    {
+        javax.swing.JOptionPane.showMessageDialog(this, "Data Entry Operator added successfully with employeeID: " + employeeID + " and password: password_123");
+        this.setVisible(false);
+        BranchManagerMenu menu = new BranchManagerMenu();
+        menu.setVisible(true);
+    }
+
+    // Clear input fields
+    clearFields();                      
+    }//GEN-LAST:event_addBtnActionPerformed
 
     /**
      * @param args the command line arguments

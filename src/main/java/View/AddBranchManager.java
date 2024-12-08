@@ -4,6 +4,12 @@
  */
 package View;
 
+
+import Controller.EmployeeController;
+import Controller.SuperAdminController;
+import Model.Employee.EmployeeService;
+import Model.EmployeeType;
+import Model.SAdmin.SuperAdminService;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -16,8 +22,21 @@ public class AddBranchManager extends javax.swing.JFrame {
     /**
      * Creates new form AddBranchManager
      */
-    public AddBranchManager() {
+
+    int branchID;
+    private void clearFields() 
+    {
+        nameField.setText("");
+        addressField.setText("");
+        phoneField.setText("");
+        emailField.setText("");
+        salaryField.setText("");
+        addBtn.setEnabled(false); // Disable the button after clearing the fields
+}
+
+    public AddBranchManager(int branchID) {
         initComponents();
+        this.branchID=branchID;
         addBtn.setEnabled(false);
         addChecks();
     }
@@ -171,6 +190,48 @@ public class AddBranchManager extends javax.swing.JFrame {
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         // TODO add your handling code here:
+
+        
+        String name = nameField.getText().trim();
+        String address = addressField.getText().trim();
+        String phoneNumber = phoneField.getText().trim();
+        String email = emailField.getText().trim();
+        String salaryStr = salaryField.getText().trim();
+        //int branchID=0;  //it will be
+        int salary;
+        try 
+        {
+            salary = Integer.parseInt(salaryStr);
+        } 
+        catch (NumberFormatException e) 
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid salary. Please enter a numeric value.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) 
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid email format!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!phoneNumber.matches("\\d{11}")) 
+    {
+        javax.swing.JOptionPane.showMessageDialog(this, "Phone number must be exactly 11 digits!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+        EmployeeController employeeeController= EmployeeController.getInstance(new EmployeeService());
+        int employeeID=employeeeController.addNewEmployee(email, name, EmployeeType.BRANCH_MANAGER, branchID, phoneNumber, address, salary);
+        if(employeeID==0)  //aka failed to insert
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Failed to add branch manager. Please try again.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Branch Manager added successfully with employeeID: "+ employeeID+" and password: password_123");
+            this.setVisible(false);
+            SuperAdminMenu menu=new SuperAdminMenu();
+            menu.setVisible(true);
+        }
+        clearFields();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
@@ -209,7 +270,8 @@ public class AddBranchManager extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddBranchManager().setVisible(true);
+
+                //new AddBranchManager().setVisible(true);
             }
         });
     }

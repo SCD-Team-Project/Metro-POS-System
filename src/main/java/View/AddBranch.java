@@ -4,6 +4,8 @@
  */
 package View;
 
+import Controller.SuperAdminController;
+import Model.SAdmin.SuperAdminService;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -52,6 +54,14 @@ public class AddBranch extends javax.swing.JFrame {
         addressField.getDocument().addDocumentListener(listener);
         phoneField.getDocument().addDocumentListener(listener);
     }
+    private void clearFields() {
+    nameField.setText("");
+    citydropDown.setSelectedIndex(0);
+    addressField.setText("");
+    phoneField.setText("");
+    addBtn.setEnabled(false);
+}
+
    
 
     /**
@@ -107,6 +117,11 @@ public class AddBranch extends javax.swing.JFrame {
         bgPanel.add(phoneLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 330, -1, 28));
 
         nameField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        nameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameFieldActionPerformed(evt);
+            }
+        });
         bgPanel.add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 106, 200, 40));
 
         citydropDown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Lahore", "Karachi", "Islamabad", "Multan", "Faisalabad" }));
@@ -149,8 +164,6 @@ public class AddBranch extends javax.swing.JFrame {
         bgPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(398, 427, 70, 30));
 
         getContentPane().add(bgPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 680, 480));
-
-        backgroundLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1050, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
@@ -166,13 +179,43 @@ public class AddBranch extends javax.swing.JFrame {
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         // TODO add your handling code here:
         //add the data to database backend logic
+        String branchName = nameField.getText().trim();
+        String city = citydropDown.getSelectedItem().toString();
+        String address = addressField.getText().trim();
+        String phoneNumber = phoneField.getText().trim();
+        SuperAdminController sAdminController= SuperAdminController.getInstance(new SuperAdminService());
+        boolean result=sAdminController.insertNewBranch(branchName, city, address, phoneNumber);
+        if (!phoneNumber.matches("\\d{11}")) 
+    {
+        javax.swing.JOptionPane.showMessageDialog(this, "Phone number must be exactly 11 digits!", "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+        if(result)
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Branch added successfully!");
+            this.setVisible(false);
+            SuperAdminMenu menu=new SuperAdminMenu();
+            menu.setVisible(true);
+        }
+        else
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Failed to add branch. Please try again.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+        clearFields();
+       // new SAdminController().
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
         // TODO add your handling code here:
+        this.setVisible(false);
         SuperAdminMenu menu=new SuperAdminMenu();
         menu.setVisible(true);
+        
     }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameFieldActionPerformed
 
     /**
      * @param args the command line arguments

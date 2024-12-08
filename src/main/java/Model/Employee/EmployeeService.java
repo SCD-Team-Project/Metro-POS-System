@@ -20,6 +20,10 @@ public class EmployeeService
     {
         this.conn=conn;
     }
+    public EmployeeService() 
+    {
+       
+    }
     
     public int addEmployee(String email,String name,EmployeeType type,int branchID,String phone,String address, int salary)
     {
@@ -140,4 +144,28 @@ public class EmployeeService
         }
         return false; // Return false if the deletion fails
     }
+
+    public int getBranchID(int employeeID,EmployeeType type) 
+    {
+        String query="SELECT branchID FROM EMPLOYEE WHERE employeeID=? AND type=?";
+        
+        
+         try (PreparedStatement pstmt = conn.prepareStatement(query))
+         {
+            pstmt.setInt(1, employeeID);
+            pstmt.setString(2, type.getType());
+           ResultSet rs=pstmt.executeQuery();
+            if(rs.next())
+            {
+                int branchID=rs.getInt("branchID");
+                return branchID;
+            }
+         }
+         catch(SQLException e) 
+        {
+            System.out.println("Error fetching branchID : " + e.getMessage());
+        }
+         return 0; //if no branchID is found
+    }
+    
 }

@@ -4,22 +4,56 @@
  */
 package View;
 
+
+import Controller.EmployeeController;
+import Controller.SuperAdminController;
+import Model.Employee.EmployeeService;
+import Model.EmployeeType;
+import Model.SAdmin.SuperAdminService;
+import Model.UserSession;
+
 /**
  *
  * @author Dell
  */
 public class Login extends javax.swing.JFrame {
 
+//<<<<<<< HEAD
     /**
      * Creates new form Login
      */
-    public Login() {
+   /* public Login() {
         initComponents();
         
        // loginBtn.setEnabled(false);
         confirmPasslabel.setVisible(false);
         confirmPassfield.setVisible(false);
         
+    }
+=======*/
+    SuperAdminController superAdminController;
+    EmployeeController employeeController;
+    /**
+     * Creates new form Login
+     * @param superAdminController
+     * @param employeeController
+     */
+   
+    public Login(SuperAdminController superAdminController,EmployeeController employeeController)
+    {
+        
+        this.superAdminController=superAdminController;
+        this.employeeController=employeeController;
+        initComponents();
+        
+       // loginBtn.setEnabled(false);
+        
+    }
+     public Login()
+    {
+        this.superAdminController=SuperAdminController.getInstance(new SuperAdminService());
+        this.employeeController=EmployeeController.getInstance(new EmployeeService());
+        initComponents();
     }
 
     /**
@@ -41,8 +75,6 @@ public class Login extends javax.swing.JFrame {
         userRole = new javax.swing.JComboBox<>();
         loginBtn = new javax.swing.JButton();
         exitBtn = new javax.swing.JButton();
-        confirmPasslabel = new javax.swing.JLabel();
-        confirmPassfield = new javax.swing.JPasswordField();
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -75,7 +107,7 @@ public class Login extends javax.swing.JFrame {
         usernameField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         loginPanel.add(usernameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 170, 222, 35));
 
-        userRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "SuperAdmin", "BranchManager", "Cashier", "DataEntryOperator" }));
+        userRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SuperAdmin", "Branch_Manager", "Cashier", "Data_Entry_Operator" }));
         userRole.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         userRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,21 +136,7 @@ public class Login extends javax.swing.JFrame {
         });
         loginPanel.add(exitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 400, 50, -1));
 
-        confirmPasslabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        confirmPasslabel.setText("Confirm Password");
-        loginPanel.add(confirmPasslabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 300, -1, -1));
-
-        confirmPassfield.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        confirmPassfield.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                confirmPassfieldActionPerformed(evt);
-            }
-        });
-        loginPanel.add(confirmPassfield, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 330, 220, 35));
-
         getContentPane().add(loginPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 30, 490, 460));
-
-        background.setIcon(new javax.swing.ImageIcon("C:\\Users\\Dell\\Desktop\\Stores-Open-Graph-Image.jpg")); // NOI18N
         getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 600));
 
         setSize(new java.awt.Dimension(1059, 608));
@@ -127,6 +145,83 @@ public class Login extends javax.swing.JFrame {
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         // TODO add your handling code here:
+        String selectedRole=(String) userRole.getSelectedItem();
+        String username=usernameField.getText();
+        String password=new String(passwordField.getPassword());
+        if(selectedRole==null||selectedRole.isEmpty())
+        {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a role.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        boolean loginSuccess=false;
+        switch(selectedRole)
+        {
+            case "SuperAdmin":
+                loginSuccess=superAdminController.verifyUser(username,password);
+                if(loginSuccess)
+                {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Login Successful", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    UserSession.create(username, selectedRole, 0); //branchID zero cause this is Admin who is not limited to a specific branch
+                    new SuperAdminMenu().setVisible(true);
+                    this.dispose();
+                }
+                break;
+            case "Branch_Manager":
+            case "Cashier":
+            case "Data_Entry_Operator":
+                int employeeID;
+                try
+                {
+                    employeeID=Integer.parseInt(username);
+                }
+                catch(NumberFormatException e)
+                {
+                     javax.swing.JOptionPane.showMessageDialog(this, "Invalid Employee ID format.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int loginResult = employeeController.verifyLogin(employeeID, password, EmployeeType.valueOf(selectedRole.toUpperCase()));
+                if(loginResult==0||loginResult==1) //aka login Successful
+                {
+                    loginSuccess=true;
+                    javax.swing.JOptionPane.showMessageDialog(this, "Login Successful", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    int branchID=employeeController.getBranchID(employeeID, EmployeeType.valueOf(selectedRole.toUpperCase()));
+                    UserSession.create(username, selectedRole.toUpperCase(), branchID);
+                }
+                if (loginResult == 0 )
+                {
+                    new ChangePassword().setVisible(true);  //the details you want you can take them from userSession OKAY HONEY!?
+                    this.dispose();
+                }
+                else if(loginResult==1)
+                {
+                    // Proceed to the respective menu
+                    switch (selectedRole)
+                    {
+                        case "Branch_Manager" -> new BranchManagerMenu().setVisible(true);
+                        case "Cashier" -> new Cashier().setVisible(true);
+                        case "Data_Entry_Operator" -> new DataEntryOperator().setVisible(true);
+                        default -> {}  
+                    }
+                    this.dispose();
+                }
+                break;
+        default:
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid role selected.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+    }
+        //to do thing:
+        //on change passwordadd a parameter of the "type" of customer and the "customerID"
+        //NO NO NO NO NO JUST PUT THE VALUES IN THE USERSESSION FROM HERE THE STATIC CLASS!!!
+
+    if (!loginSuccess) 
+    {
+        javax.swing.JOptionPane.showMessageDialog(this, "Login Failed. Please check your credentials.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+           
+    } 
+    userRole.setSelectedIndex(-1);
+    usernameField.setText("");
+    passwordField.setText("");
+// TODO add your handling code here:
         //verify the credentials from DB
     }//GEN-LAST:event_loginBtnActionPerformed
 
@@ -137,9 +232,13 @@ public class Login extends javax.swing.JFrame {
      
     private void userRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userRoleActionPerformed
         // TODO add your handling code here:
-        String roleSelected=(String)userRole.getSelectedItem();
+       // String roleSelected=(String)userRole.getSelectedItem();
         
-        if(roleSelected.equals("BranchManager")||roleSelected.equals("Cashier")||roleSelected.equals("DataEntryCashier")){
+       // if(roleSelected.equals("BranchManager")||roleSelected.equals("Cashier")||roleSelected.equals("DataEntryCashier")){
+       // String roleSelected=(String)userRole.getSelectedItem();
+        
+       /* if(roleSelected.equals("BranchManager")||roleSelected.equals("Cashier")||roleSelected.equals("DataEntryCashier")){
+>>>>>>> umaima
             passwordLabel.setText("Enter New Password");
             confirmPasslabel.setVisible(true);
             confirmPassfield.setVisible(true);
@@ -150,18 +249,25 @@ public class Login extends javax.swing.JFrame {
             passwordLabel.setText("Password");
             confirmPasslabel.setVisible(false);
             confirmPassfield.setVisible(false);
+<<<<<<< HEAD
         }
+=======
+        } */
         
         //enable the login button
         //user session logic to be implemented i-e if they are logging in for the 2nd time the confirm pass thing is changed
         
     }//GEN-LAST:event_userRoleActionPerformed
+/*<<<<<<< HEAD
      
    
-    private void confirmPassfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmPassfieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_confirmPassfieldActionPerformed
+=======*/
 
+    private void usernameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_usernameFieldActionPerformed
+     
+   
     /**
      * @param args the command line arguments
      */
@@ -192,15 +298,14 @@ public class Login extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+
+                //new Login(new SAdminController(),newEmployeeController()).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
-    private javax.swing.JPasswordField confirmPassfield;
-    private javax.swing.JLabel confirmPasslabel;
     private javax.swing.JButton exitBtn;
     private javax.swing.JButton loginBtn;
     private javax.swing.JPanel loginPanel;

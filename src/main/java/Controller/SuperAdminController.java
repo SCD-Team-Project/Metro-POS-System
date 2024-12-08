@@ -7,11 +7,21 @@ import java.util.Map;
 
 public class SuperAdminController 
 {
-    SuperAdminService sAdminService;
+    private final SuperAdminService sAdminService;
+    private static SuperAdminController instance;
     
-    public SuperAdminController(SuperAdminService sAdminService)
+    
+    private SuperAdminController(SuperAdminService sAdminService)
     {
         this.sAdminService=sAdminService;
+    }
+    public static SuperAdminController getInstance(SuperAdminService sAdminService)
+    {
+        if(instance==null)
+        {
+           instance=new SuperAdminController(sAdminService);
+        }
+        return instance;
     }
     public boolean verifyUser(String username, String password) 
     {
