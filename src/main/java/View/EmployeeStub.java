@@ -1,18 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package View;
 
 import Controller.EmployeeController;
 import Model.EmployeeType;
 
-/**
- *
- * @author LENOVO
- */
 public class EmployeeStub 
 {
+
     EmployeeController empController;
 
     public EmployeeStub(EmployeeController empController) 

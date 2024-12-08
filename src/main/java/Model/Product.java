@@ -35,12 +35,13 @@ public class Product
         
     }
 
-    public Product(String productName, int categoryID, int purchasePrice, int salesPrice) 
+    public Product(String productName, int categoryID, int purchasePrice, int salesPrice,int quantity) 
     {
         this.productName = productName;
         this.categoryID = categoryID;
         this.purchasePrice = purchasePrice;
         this.salesPrice = salesPrice;
+        this.stockQuantity=quantity;
     }
     
     

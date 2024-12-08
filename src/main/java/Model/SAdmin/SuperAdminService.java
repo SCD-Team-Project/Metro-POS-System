@@ -23,6 +23,11 @@ public class SuperAdminService
         this.conn=conn;
     }
     
+    public SuperAdminService() 
+    {
+        
+    }
+    
     public boolean login(String username, String password) 
     {
         String query="SELECT password FROM superadmin WHERE username = ?";

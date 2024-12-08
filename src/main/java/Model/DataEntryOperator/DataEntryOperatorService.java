@@ -21,6 +21,11 @@ public class DataEntryOperatorService
         this.conn=conn;
     }
     
+    public DataEntryOperatorService()
+    {
+        //this.conn=conn;
+    }
+    
     public boolean addVendor(String vendorName,String phoneNumber,String email,String address)
     {
         String query="INSERT INTO VENDOR (vendorName,phoneNumber,email,address) VALUES (?,?,?,?)";
@@ -62,6 +67,28 @@ public class DataEntryOperatorService
         }
         return vendorNames;
     }
+     public int getVendorID(String vendorName)
+    {
+        String query = "SELECT vendorID FROM VENDOR WHERE vendorName = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(query))
+        {
+            pstmt.setString(1, vendorName);
+
+            try (ResultSet rs = pstmt.executeQuery()) 
+            {
+                if (rs.next())
+                {
+                    return rs.getInt("vendorID");
+                }
+            }
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error retrieving vendor ID: " + e.getMessage());
+        }
+
+        return -1; // Returning -1 if vendor not found
+    }
 
     //change this and add the categoryID with it too kindly //doneee
     public List<Category> getAllCategories() 
@@ -83,6 +110,29 @@ public class DataEntryOperatorService
         }
         return categories;
     }
+     public int getCategoryID(String categoryName)
+    {
+        String query = "SELECT categoryID FROM CATEGORY WHERE categoryName = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(query))
+        {
+            pstmt.setString(1, categoryName);
+
+            try (ResultSet rs = pstmt.executeQuery()) 
+            {
+                if (rs.next()) 
+                {
+                    return rs.getInt("categoryID");
+                }
+            }
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error retrieving category ID: " + e.getMessage());
+        }
+
+        return -1; // Returning -1 if category not found
+    }
+
     
     public boolean addCategory(String categoryName)
     {
@@ -170,6 +220,187 @@ public class DataEntryOperatorService
         return false;
     }
     
+    /*public boolean addAllProducts(int branchID, int vendorID, List<Product> productList) 
+    {
+         boolean isSuccess = true;
+
+        String saveProductQuery = "INSERT INTO PRODUCT (productName, categoryID, purchasePrice, salesPrice) " +
+                              "VALUES (?, ?, ?, ?) " +
+                              "ON CONFLICT (productName) " +
+                              "DO UPDATE SET " +
+                              "purchasePrice = EXCLUDED.purchasePrice, " +
+                              "salesPrice = EXCLUDED.salesPrice " +
+                              "RETURNING productID";
+
+        String purchaseProductQuery = "INSERT INTO PURCHASED_PRODUCTS (productID, vendorID, numOfItemsPurchased, unitPurchasePrice, branchID) " +
+                                    "VALUES (?, ?, ?, ?, ?)";
+
+         String updateStockQuery = "INSERT INTO BRANCH_PRODUCT_STOCK (branchID, productID, stockQuantity) " +
+                              "VALUES (?, ?, ?) " +
+                              "ON CONFLICT (branchID, productID) " +
+                              "DO UPDATE SET stockQuantity = BRANCH_PRODUCT_STOCK.stockQuantity + EXCLUDED.stockQuantity";
+        try
+        {
+            for (Product product : productList) 
+            {
+                int productID = -1;
+
+                // Step 1: Insert or update product (if it already exists) and get productID in return
+                try (PreparedStatement saveProductStmt = conn.prepareStatement(saveProductQuery)) 
+                {
+                    saveProductStmt.setString(1, product.getProductName());
+                    saveProductStmt.setInt(2, product.getCategoryID());
+                    saveProductStmt.setInt(3, product.getPurchasePrice());
+                    saveProductStmt.setInt(4, product.getSalesPrice());
+
+                    try (ResultSet rs = saveProductStmt.executeQuery()) 
+                    {
+                        if (rs.next()) 
+                        {
+                            productID = rs.getInt("productID");
+                        }
+                    }
+                }
+
+                if (productID == -1)
+                {
+                    System.out.println("Failed to save or retrieve product ID for product: " + product.getProductName());
+                    isSuccess = false;
+                    continue;
+                }
+
+                // Step 2: Inserting into PURCHASED_PRODUCTS (trigger will handle stock update)
+                try (PreparedStatement purchaseProductStmt = conn.prepareStatement(purchaseProductQuery)) 
+                {
+                    purchaseProductStmt.setInt(1, productID);
+                    purchaseProductStmt.setInt(2, vendorID);
+                    purchaseProductStmt.setInt(3, product.getStockQuantity());
+                    purchaseProductStmt.setInt(4, product.getPurchasePrice());
+                    purchaseProductStmt.setInt(5, branchID);
+
+                    int rowsAffected = purchaseProductStmt.executeUpdate();
+                    if (rowsAffected <= 0)
+                    {
+                        System.out.println("Failed to insert purchase details for product: " + product.getProductName());
+                        isSuccess = false;
+                    }
+                }
+                
+                // Step 3: Insert or update stock in BRANCH_PRODUCT_STOCK
+                try (PreparedStatement updateStockStmt = conn.prepareStatement(updateStockQuery))
+                {
+                updateStockStmt.setInt(1, branchID);
+                updateStockStmt.setInt(2, productID);
+                updateStockStmt.setInt(3, product.getStockQuantity());
+
+                int rowsAffected = updateStockStmt.executeUpdate();
+                if (rowsAffected <= 0) {
+                    System.out.println("Failed to update stock for product: " + product.getProductName());
+                    isSuccess = false;
+                }
+            }
+        } 
+        catch (SQLException e)
+        {
+            System.out.println("Error in addAllProducts: " + e.getMessage());
+            isSuccess = false;
+        }
+
+        return isSuccess;
+    }*/
+        public boolean addAllProducts(int branchID, int vendorID, List<Product> productList) 
+        {
+            boolean isSuccess = true;
+
+    String saveProductQuery = "INSERT INTO PRODUCT (productName, categoryID, purchasePrice, salesPrice) " +
+                              "VALUES (?, ?, ?, ?) " +
+                              "ON CONFLICT (productName) " +
+                              "DO UPDATE SET " +
+                              "purchasePrice = EXCLUDED.purchasePrice, " +
+                              "salesPrice = EXCLUDED.salesPrice " +
+                              "RETURNING productID";
+
+    String purchaseProductQuery = "INSERT INTO PURCHASED_PRODUCTS (productID, vendorID, numOfItemsPurchased, unitPurchasePrice, branchID) " +
+                                  "VALUES (?, ?, ?, ?, ?)";
+
+    String updateStockQuery = "INSERT INTO BRANCH_PRODUCT_STOCK (branchID, productID, stockQuantity) " +
+                              "VALUES (?, ?, ?) " +
+                              "ON CONFLICT (branchID, productID) DO NOTHING";
+
+            try 
+            {
+                for (Product product : productList) 
+                {
+                    int productID = -1;
+
+                    // Step 1: Insert or update product and get productID
+                    try (PreparedStatement saveProductStmt = conn.prepareStatement(saveProductQuery))
+                    {
+                        saveProductStmt.setString(1, product.getProductName());
+                        saveProductStmt.setInt(2, product.getCategoryID());
+                        saveProductStmt.setInt(3, product.getPurchasePrice());
+                        saveProductStmt.setInt(4, product.getSalesPrice());
+
+                        try (ResultSet rs = saveProductStmt.executeQuery())
+                        {
+                            if (rs.next()) 
+                            {
+                                productID = rs.getInt("productID");
+                            }
+                        }
+                    }
+
+                    if (productID == -1) 
+                    {
+                        System.out.println("Failed to save or retrieve product ID for product: " + product.getProductName());
+                        isSuccess = false;
+                        continue;
+                    }
+
+                    // Step 2: Insert into PURCHASED_PRODUCTS
+                    try (PreparedStatement purchaseProductStmt = conn.prepareStatement(purchaseProductQuery)) 
+                    {
+                        purchaseProductStmt.setInt(1, productID);
+                        purchaseProductStmt.setInt(2, vendorID);
+                        purchaseProductStmt.setInt(3, product.getStockQuantity());
+                        purchaseProductStmt.setInt(4, product.getPurchasePrice());
+                        purchaseProductStmt.setInt(5, branchID);
+
+                        int rowsAffected = purchaseProductStmt.executeUpdate();
+                        if (rowsAffected <= 0) 
+                        {
+                            System.out.println("Failed to insert purchase details for product: " + product.getProductName());
+                            isSuccess = false;
+                        }
+                    }
+
+                    // Step 3: Insert or update stock in BRANCH_PRODUCT_STOCK
+                    try (PreparedStatement updateStockStmt = conn.prepareStatement(updateStockQuery)) 
+                    {
+                        updateStockStmt.setInt(1, branchID);
+                        updateStockStmt.setInt(2, productID);
+                        updateStockStmt.setInt(3, product.getStockQuantity());
+
+                        int rowsAffected = updateStockStmt.executeUpdate();
+                        if (rowsAffected <= 0) 
+                        {
+                            System.out.println("Failed to update stock for product: " + product.getProductName());
+                            isSuccess = false;
+                        }
+                    }
+                }
+            } 
+            catch (SQLException e) 
+            {
+                System.out.println("Error in addAllProducts: " + e.getMessage());
+                isSuccess = false;
+            }
+
+            return isSuccess;
+        }
+
+    
+    
     //look into it if the product already exists yk
     //to be modified yk adding the stock thingyy too
     //no instead I would recommend settling for a trigger
@@ -219,4 +450,5 @@ public class DataEntryOperatorService
     
     
     //now for sales function aka minus the product quantity from stock when a new sale is done and add it into the new sale button okayyy!???
+
 }
